@@ -2,8 +2,12 @@ package com.example.delivery.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -18,7 +22,7 @@ public class UserEntity extends BaseTimeEntity{
     }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int userId;
+    private Long userId;
 
     @Column(nullable = false, length = 50)
     private String email;
@@ -43,14 +47,4 @@ public class UserEntity extends BaseTimeEntity{
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<OrderEntity> orders = new ArrayList<>();
 
-    protected UserEntity(String email, String password, Role role, boolean deleted) {
-        this.email = email;
-        this.password = password;
-        this.role = role;
-        this.deleted = deleted;
-    }
-
-    public void deleted(){
-        this.deleted = true;
-    }
 }
