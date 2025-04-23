@@ -19,7 +19,7 @@ public class UserService {
                 .email(userReqDTO.getEmail())
                 .password(encodedPassword)
                 .name(userReqDTO.getName())
-                .role(UserEntity.Role.valueOf(userReqDTO.getRole()))
+                .roles(UserEntity.Role.valueOf(userReqDTO.getRole()))
                 .build();
 
         userRepository.save(userEntity);

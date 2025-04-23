@@ -33,7 +33,7 @@ public class UserEntity extends BaseTimeEntity{
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Role roles;
 
     @Column
     private boolean deleted;

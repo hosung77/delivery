@@ -51,6 +51,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 		throws ServletException, IOException {
 		ParsedToken parsedToken = new ParsedToken(request.getCookies());
+
+
 		// 토큰이 둘 다 있어야 인증된 상태로 인정
 		if (parsedToken.isAccessTokenAndRefreshTokenExist()) {
 			try {
@@ -118,14 +120,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private void makeSecurityAuthentication(TokenClaim tokenClaim) {
 		List<SimpleGrantedAuthority> authorities = tokenClaim.getRoles()
 			.stream()
-			.map(SimpleGrantedAuthority::new)
+			.map(role -> new SimpleGrantedAuthority("ROLE_" + role))
 			.toList();
+		log.info("TokenClaim 정보: {}", tokenClaim); // tokenClaim의 내용 출력
+		log.info("생성된 권한 목록: {}", authorities); // authorities 내용 출력
 
 		Authentication authentication = new UsernamePasswordAuthenticationToken(
 			tokenClaim.getSubject(), null, authorities
 		);
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
+		log.info("SecurityContext 설정된 인증 정보: {}", SecurityContextHolder.getContext().getAuthentication());
 	}
 
 	@Getter

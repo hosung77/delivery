@@ -33,8 +33,9 @@ public class AuthService {
 		if (!passwordEncoder.matches(password, user.getPassword())) {
 			throw new CustomException(ErrorCode.PASSWORD_MISMATCH);
 		}
+		List<String> roles = List.of(user.getRoles().name());  // 예: "ADMIN", "USER", "OWNER"
 		// 토큰 정보 생성 ID, Email, nickname, Roles -> 현재는 권한 관리 X
-		TokenClaim tokenClaim = new TokenClaim(user.getUserId(), user.getEmail(), user.getName(), List.of());
+		TokenClaim tokenClaim = new TokenClaim(user.getUserId(), user.getEmail(), user.getName(), roles);
 		// Token(accessToken, refreshToken)
 		Token token = tokenService.generateToken(tokenClaim);
 		// refreshToken 저장
