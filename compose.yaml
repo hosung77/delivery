@@ -1,11 +1,11 @@
 version: '3.8'
 services:
-  news_feed-mysql:
+  delivery-mysql:
     image: mysql:8.0.36
 
     platform: linux/amd64
     volumes:
-      - delivery_mysql_volume:/data
+    - delivery_mysql_volume:/var/lib/mysql
     ports:
       - '3306:3306'
     environment:
