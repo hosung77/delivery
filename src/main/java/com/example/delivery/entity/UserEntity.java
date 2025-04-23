@@ -1,10 +1,7 @@
 package com.example.delivery.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +10,8 @@ import java.util.List;
 @Table(name = "tb_user")
 @NoArgsConstructor
 @Getter
+@Builder
+@AllArgsConstructor
 public class UserEntity extends BaseTimeEntity{
     public enum Role{
         ADMIN, USER, OWNER
@@ -24,6 +23,8 @@ public class UserEntity extends BaseTimeEntity{
     @Column(nullable = false, length = 50)
     private String email;
 
+    @Column(nullable = false, length = 10)
+    private String name;
     @Column(nullable = false, length = 100)
     private String password;
 
