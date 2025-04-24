@@ -5,7 +5,8 @@ import com.example.delivery.dto.store.StoreResponseDto;
 import com.example.delivery.entity.StoreEntity;
 import com.example.delivery.entity.UserEntity;
 import com.example.delivery.repository.StoreRepository;
-import com.example.delivery.repository.UserRepository;
+import com.example.delivery.repository.user.UserRepository;
+import com.example.delivery.repository.user.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
@@ -30,7 +31,7 @@ public class StoreService {
               .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
 
       // 2. 사장님 권한 확인
-      if (!user.getRole().equals(UserEntity.Role.OWNER)) {
+      if (!user.getRoles().equals(UserEntity.Role.OWNER)) {
          throw new RuntimeException("사장인 유저만 가게 생성이 가능합니다.");
       }
 

@@ -19,7 +19,7 @@ public class StoreResponseDto {
     // DateTimeFormatter를 static으로 정의하여 재사용 가능하게 설정
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
 
-    public StoreResponseDto(int id, String name, LocalTime open, LocalTime close, int minOrderPrice,  String status, List<MenuEntity> menus) {
+    public StoreResponseDto(Long id, String name, LocalTime open, LocalTime close, int minOrderPrice, String status, List<MenuEntity> menus) {
         this.id = id;
         this.name = name;
 
