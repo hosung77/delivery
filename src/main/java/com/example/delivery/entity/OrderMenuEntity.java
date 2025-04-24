@@ -35,4 +35,9 @@ public class OrderMenuEntity {
         this.quantity = quantity;
         this.price = price;
     }
+
+    public static OrderMenuEntity toOrderMenu(OrderEntity order, MenuEntity menu, int quantity) {
+        return new OrderMenuEntity(order, menu, quantity, menu.getPrice());
+    }
+
 }

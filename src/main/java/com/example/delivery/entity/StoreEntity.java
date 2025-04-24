@@ -68,4 +68,21 @@ public class StoreEntity extends BaseTimeEntity {
     public boolean isAvailable() {
         return !closed && status == Status.OPEN;
     }
+
+    public boolean isOwner(Long userId) {
+        return this.user != null && this.user.getUserId().equals(userId);
+    }
+
+    // 폐업인지 아닌지 영업중인지 아닌지에 관한 메서드
+    public boolean isOperating() {
+        // isAvailable로 가게가 폐업 상태인지를 체크
+        if (!isAvailable()) {
+            return false;
+        }
+
+        // 현재 시간 체크 (영업시간 체크)
+        LocalTime now = LocalTime.now();
+        return !now.isBefore(open) && !now.isAfter(close);
+    }
+
 }

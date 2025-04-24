@@ -16,7 +16,10 @@ public enum ErrorCode {
     IMAGE_SAVE_FAIL("이미지 저장에 실패 했습니다!", HttpStatus.INTERNAL_SERVER_ERROR),
     INVALID_TOKEN("토큰이 유효하지 않습니다. 다시 로그인 해주세요", HttpStatus.UNAUTHORIZED),
     AUTH_UNAUTHORIZED("인증이 필요한 요청입니다", HttpStatus.UNAUTHORIZED),
-    FORBIDDEN("권한 없는 유저입니다.", HttpStatus.FORBIDDEN);
+    FORBIDDEN("권한 없는 유저입니다.", HttpStatus.FORBIDDEN),
+
+    ORDER_NOT_FOUND("해당하는 주문을 찾을 수 없습니다.",HttpStatus.NOT_FOUND),
+    ONER_NOT_MATCH("가게 사장님만이 주문을 관리할 수 있습니다.",HttpStatus.BAD_REQUEST);
 
     private final String message;
     private final HttpStatus status;
