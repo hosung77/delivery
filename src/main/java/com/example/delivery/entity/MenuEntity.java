@@ -17,7 +17,7 @@ public class MenuEntity extends BaseTimeEntity{
     }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int menuId;
+    private Long menuId;
     @Column(nullable = false, unique = true, length = 50)
     private String name;
     @Column(nullable = false)
