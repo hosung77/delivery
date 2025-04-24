@@ -18,7 +18,8 @@ public enum ErrorCode {
     AUTH_UNAUTHORIZED("인증이 필요한 요청입니다", HttpStatus.UNAUTHORIZED),
     FORBIDDEN("권한 없는 유저입니다.", HttpStatus.FORBIDDEN),
 
-    ORDER_NOT_FOUND("해당하는 주문을 찾을 수 없습니다.",HttpStatus.NOT_FOUND);
+    ORDER_NOT_FOUND("해당하는 주문을 찾을 수 없습니다.",HttpStatus.NOT_FOUND),
+    ONER_NOT_MATCH("가게 사장님만이 주문을 관리할 수 있습니다.",HttpStatus.BAD_REQUEST);
 
     private final String message;
     private final HttpStatus status;

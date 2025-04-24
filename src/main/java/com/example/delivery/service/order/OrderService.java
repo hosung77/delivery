@@ -4,11 +4,13 @@ import com.example.delivery.config.error.CustomException;
 import com.example.delivery.config.error.ErrorCode;
 import com.example.delivery.dto.order.RequestOrderDto;
 import com.example.delivery.dto.order.ResponseOrderDto;
+import com.example.delivery.dto.order.ResponseOrderUpdateDto;
 import com.example.delivery.entity.*;
 import com.example.delivery.mapper.OrderMapper;
 import com.example.delivery.repository.order.OrderRepository;
 import com.example.delivery.repository.store.StoreRepository;
 import com.example.delivery.repository.user.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +28,7 @@ public class OrderService {
     private final UserRepository userRepository;
     private final OrderMapper orderMapper;
 
+    @Transactional
     public ResponseOrderDto createOrder(RequestOrderDto request, Long storeId, Long userId) {
         // store 관련된 예외 만드실까봐 임시로 아무 예외 넣어놓음, 추후 수정
         // PathVariable로 받아온 id로 가게 조회
@@ -58,5 +61,38 @@ public class OrderService {
         orderRepository.save(order);
 
         return orderMapper.toDto(order);
+    }
+
+    @Transactional
+    public ResponseOrderUpdateDto updateOrder(Long storeId, Long orderId, String status, Long userId) {
+        // 가게 조회
+        StoreEntity store = storeRepository.findById(storeId)
+                .orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        // 쿠키에서 받아온 유저 아이디로 유저 조회
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        // 주문 조회
+        OrderEntity order = orderRepository.findById(orderId)
+                .orElseThrow(()-> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+
+        if(!store.isOwner(userId)){
+            throw new CustomException(ErrorCode.ONER_NOT_MATCH);
+        }
+
+        // status 값을 Status enum으로 변환
+        OrderEntity.Status receivedStatus = OrderEntity.Status.valueOf(status);
+
+        order.updateStatus(receivedStatus);
+
+        if (receivedStatus == OrderEntity.Status.ACCEPTED){
+            order.startCooking();
+        }
+
+        orderRepository.save(order);
+
+        return ResponseOrderUpdateDto.updatedStatus(order);
+
     }
 }

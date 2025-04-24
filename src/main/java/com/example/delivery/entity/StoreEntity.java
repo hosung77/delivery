@@ -58,4 +58,8 @@ public class StoreEntity extends BaseTimeEntity{
         return !closed && status == Status.OPEN;
     }
 
+    public boolean isOwner(Long userId) {
+        return this.user != null && this.user.getUserId().equals(userId);
+    }
+
 }
