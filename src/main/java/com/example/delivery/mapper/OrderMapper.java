@@ -1,6 +1,6 @@
 package com.example.delivery.mapper;
 
-import com.example.delivery.dto.order.ResponseOrderDto;
+import com.example.delivery.dto.order.response.ResponseOrderDto;
 import com.example.delivery.entity.OrderEntity;
 import com.example.delivery.entity.OrderMenuEntity;
 import com.example.delivery.entity.StoreEntity;

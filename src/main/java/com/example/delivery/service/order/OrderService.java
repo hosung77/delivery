@@ -2,9 +2,9 @@ package com.example.delivery.service.order;
 
 import com.example.delivery.config.error.CustomException;
 import com.example.delivery.config.error.ErrorCode;
-import com.example.delivery.dto.order.RequestOrderDto;
-import com.example.delivery.dto.order.ResponseOrderDto;
-import com.example.delivery.dto.order.ResponseOrderUpdateDto;
+import com.example.delivery.dto.order.request.RequestOrderDto;
+import com.example.delivery.dto.order.response.ResponseOrderDto;
+import com.example.delivery.dto.order.response.ResponseOrderUpdateDto;
 import com.example.delivery.entity.*;
 import com.example.delivery.mapper.OrderMapper;
 import com.example.delivery.repository.order.OrderRepository;
@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.example.delivery.entity.OrderMenuEntity.toOrderMenu;
 

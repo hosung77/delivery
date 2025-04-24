@@ -3,6 +3,7 @@ package com.example.delivery.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.List;
 @Table(name = "tb_store")
 @NoArgsConstructor
 @Getter
+@SQLRestriction("deleted_at IS NULL")
 public class StoreEntity extends BaseTimeEntity{
     public enum Status {
         OPEN, CLOSE

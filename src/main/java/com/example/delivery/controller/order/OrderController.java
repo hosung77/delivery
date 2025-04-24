@@ -1,8 +1,9 @@
 package com.example.delivery.controller.order;
 
-import com.example.delivery.dto.order.RequestOrderDto;
-import com.example.delivery.dto.order.ResponseOrderDto;
-import com.example.delivery.dto.order.ResponseOrderUpdateDto;
+import com.example.delivery.dto.order.request.RequestOrderDto;
+
+import com.example.delivery.dto.order.response.ResponseOrderDto;
+import com.example.delivery.dto.order.response.ResponseOrderUpdateDto;
 import com.example.delivery.service.order.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

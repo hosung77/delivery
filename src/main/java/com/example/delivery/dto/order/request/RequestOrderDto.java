@@ -1,6 +1,5 @@
-package com.example.delivery.dto.order;
+package com.example.delivery.dto.order.request;
 
-import com.example.delivery.entity.MenuEntity;
 import lombok.Getter;
 import lombok.Setter;
 
