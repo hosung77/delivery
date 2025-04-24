@@ -50,7 +50,7 @@ public class StoreEntity extends BaseTimeEntity {
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
     private List<MenuEntity> menus = new ArrayList<>();
 
-    public StoreEntity(int storeId, String name, LocalTime open, LocalTime close, int minOrderPrice,
+    public StoreEntity(Long storeId, String name, LocalTime open, LocalTime close, int minOrderPrice,
                        Status status, boolean closed, UserEntity user, List<MenuEntity> menus) {
         this.storeId = storeId;
         this.name = name;
