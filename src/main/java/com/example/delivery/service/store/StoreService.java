@@ -4,8 +4,7 @@ import com.example.delivery.dto.store.StoreRequestDto;
 import com.example.delivery.dto.store.StoreResponseDto;
 import com.example.delivery.entity.StoreEntity;
 import com.example.delivery.entity.UserEntity;
-import com.example.delivery.repository.StoreRepository;
-import com.example.delivery.repository.user.UserRepository;
+import com.example.delivery.repository.store.StoreRepository;
 import com.example.delivery.repository.user.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +40,7 @@ public class StoreService {
          throw new IllegalArgumentException("최대 3개의 가게만 등록 가능합니다.");
       }
 
-      // 4. StoreEntity 생성 (Builder 패턴 활용)
+      // 4. StoreEntity 생성 (Builder 활용)
       StoreEntity store = StoreEntity.builder()
               .name(dto.getName())
               .open(LocalTime.parse(dto.getOpen()))  // String -> LocalTime

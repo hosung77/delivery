@@ -1,7 +1,8 @@
-package com.example.delivery.controller;
+package com.example.delivery.controller.store;
 
 import com.example.delivery.dto.store.StoreRequestDto;
 import com.example.delivery.dto.store.StoreResponseDto;
+import com.example.delivery.entity.UserEntity;
 import com.example.delivery.service.store.StoreService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,15 +21,15 @@ public class StoreController {
 
     // 가게 생성
     @PostMapping
-    public ResponseEntity<StoreResponseDto> createStore(@RequestBody StoreRequestDto dto, @RequestParam String email) {
-        StoreResponseDto storeResponse = storeService.createStore(dto, email);
+    public ResponseEntity<StoreResponseDto> createStore(@RequestBody StoreRequestDto dto, @RequestAttribute UserEntity user) {
+        StoreResponseDto storeResponse = storeService.createStore(dto, user.getEmail());
         return ResponseEntity.ok(storeResponse);
     }
 
     // 유저의 가게 목록 조회
     @GetMapping("/user")
-    public ResponseEntity<List<StoreResponseDto>> getStoresByUser(@RequestParam String email) {
-        List<StoreResponseDto> stores = storeService.getStoresByUser(email);
+    public ResponseEntity<List<StoreResponseDto>> getStoresByUser(@RequestAttribute UserEntity user) {
+        List<StoreResponseDto> stores = storeService.getStoresByUser(user.getEmail());
         return ResponseEntity.ok(stores);
     }
 
@@ -41,15 +42,15 @@ public class StoreController {
 
     // 가게 수정
     @PutMapping("/{storeId}")
-    public ResponseEntity<StoreResponseDto> updateStore(@PathVariable int storeId, @RequestBody StoreRequestDto dto, @RequestParam String email) {
-        StoreResponseDto updatedStore = storeService.updateStore(storeId, dto, email);
+    public ResponseEntity<StoreResponseDto> updateStore(@PathVariable int storeId, @RequestBody StoreRequestDto dto, @RequestAttribute UserEntity user) {
+        StoreResponseDto updatedStore = storeService.updateStore(storeId, dto, user.getEmail());
         return ResponseEntity.ok(updatedStore);
     }
 
     // 가게 폐업
     @PutMapping("/{storeId}/close")
-    public ResponseEntity<String> closeStore(@PathVariable int storeId, @RequestParam String email) {
-        String response = storeService.closeStore(storeId, email);
+    public ResponseEntity<String> closeStore(@PathVariable int storeId, @RequestAttribute UserEntity user) {
+        String response = storeService.closeStore(storeId, user.getEmail());
         return ResponseEntity.ok(response);
     }
 }

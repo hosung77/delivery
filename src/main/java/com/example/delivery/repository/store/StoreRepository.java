@@ -1,4 +1,4 @@
-package com.example.delivery.repository;
+package com.example.delivery.repository.store;
 
 import com.example.delivery.entity.StoreEntity;
 import com.example.delivery.entity.UserEntity;
