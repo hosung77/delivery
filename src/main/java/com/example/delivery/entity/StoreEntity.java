@@ -1,22 +1,18 @@
 package com.example.delivery.entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.SQLRestriction;
+import lombok.*;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@SQLRestriction("deleted_at IS NULL")
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Setter
 @Builder  // 클래스에 @Builder를 한 번만 적용
 @Entity
 @Table(name = "tb_store")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class StoreEntity extends BaseTimeEntity {
 
@@ -53,9 +49,8 @@ public class StoreEntity extends BaseTimeEntity {
     @Builder.Default
     private List<MenuEntity> menus = new ArrayList<>();
 
-    public StoreEntity(Long storeId, String name, LocalTime open, LocalTime close, int minOrderPrice,
+    public StoreEntity(String name, LocalTime open, LocalTime close, int minOrderPrice,
                        Status status, boolean closed, UserEntity user, List<MenuEntity> menus) {
-        this.storeId = storeId;
         this.name = name;
         this.open = open;
         this.close = close;
