@@ -1,12 +1,9 @@
 package com.example.delivery.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "tb_order_menu")
@@ -38,4 +35,9 @@ public class OrderMenuEntity {
         this.quantity = quantity;
         this.price = price;
     }
+
+    public static OrderMenuEntity toOrderMenu(OrderEntity order, MenuEntity menu, int quantity) {
+        return new OrderMenuEntity(order, menu, quantity, menu.getPrice());
+    }
+
 }
