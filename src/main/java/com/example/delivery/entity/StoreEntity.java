@@ -5,11 +5,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@SQLRestriction("deleted_at IS NULL")
 @Setter
 @Builder  // 클래스에 @Builder를 한 번만 적용
 @Entity
@@ -48,6 +50,7 @@ public class StoreEntity extends BaseTimeEntity {
     private UserEntity user;
 
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
+    @Builder.Default
     private List<MenuEntity> menus = new ArrayList<>();
 
     public StoreEntity(Long storeId, String name, LocalTime open, LocalTime close, int minOrderPrice,

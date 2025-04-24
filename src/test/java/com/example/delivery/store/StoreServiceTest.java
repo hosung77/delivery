@@ -85,7 +85,11 @@ class StoreServiceTest {
 
         // then
         assertThat(result).hasSize(2); // 폐업된 가게는 제외되어야 하므로 두 개의 가게만 반환됨
-        assertThat(result.get(0).getName()).isEqualTo("김밥천국");
+        assertThat(result.get(0).getName()).isEqualTo("김밥천국");//검증
         assertThat(result.get(1).getName()).isEqualTo("불고기브라더스");
+
+        // 결과 출력
+        System.out.println("조회된 가게 목록: ");
+        result.forEach(store -> System.out.println(store.getName()));
     }
 }
