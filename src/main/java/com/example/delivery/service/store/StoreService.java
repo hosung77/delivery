@@ -107,7 +107,7 @@ public class StoreService {
    }
 
    // 가게 단건 조회 서비스 (가게 상세 조회)
-   public StoreResponseDto getStoreById(int storeId) {
+   public StoreResponseDto getStoreById(Long storeId) {
       // 1. 가게 정보 조회
       StoreEntity store = storeRepository.findById(storeId)
               .orElseThrow(() -> new RuntimeException("가게를 찾을 수 없습니다."));
@@ -125,7 +125,7 @@ public class StoreService {
    }
 
    // 가게 수정 서비스
-   public StoreResponseDto updateStore(int storeId, StoreRequestDto dto, String email) {
+   public StoreResponseDto updateStore(Long storeId, StoreRequestDto dto, String email) {
       // 1. 유저 정보 조회 (사장님 권한 확인)
       UserEntity user = userRepository.findByEmail(email)
               .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
@@ -159,7 +159,7 @@ public class StoreService {
    }
 
    // 가게 폐업 서비스
-   public String closeStore(int storeId, String email) {
+   public String closeStore(Long storeId, String email) {
       // 1. 유저 정보 조회 (사장님 권한 확인)
       UserEntity user = userRepository.findByEmail(email)
               .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
