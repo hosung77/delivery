@@ -19,6 +19,7 @@ public enum ErrorCode {
     FORBIDDEN("권한 없는 유저입니다.", HttpStatus.FORBIDDEN),
     BAD_REQUEST("배달 완료된 주문만 리뷰 작성 가능합니다.", HttpStatus.BAD_REQUEST),
 
+
     ORDER_NOT_FOUND("해당하는 주문을 찾을 수 없습니다.",HttpStatus.NOT_FOUND),
     ONER_NOT_MATCH("가게 사장님만이 주문을 관리할 수 있습니다.",HttpStatus.BAD_REQUEST);
 
