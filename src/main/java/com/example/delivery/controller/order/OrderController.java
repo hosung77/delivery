@@ -11,22 +11,28 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/stores")
 @RequiredArgsConstructor
 public class OrderController {
 
     private final OrderService orderService;
 
-    @PostMapping("/users/stores/{storeId}/orders")
+    @PostMapping("/{storeId}/orders")
     public ResponseEntity<ResponseOrderDto> createOrder(@RequestBody RequestOrderDto request,
-                                                        @PathVariable Integer storeId) {
+                                                        @PathVariable Long storeId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String Id = (String) auth.getPrincipal(); // 토큰에 들어있던 subject 값
-        int userId = Integer.parseInt(Id);
+        String id = (String) auth.getPrincipal(); // 토큰에 들어있던 subject 값
+        Long userId = Long.parseLong(id); // String → Long 변환
 
         ResponseOrderDto responseOrderDto = orderService.createOrder(request, storeId, userId);
 
         return ResponseEntity.ok().body(responseOrderDto);
     }
 
+    @PatchMapping("/{storeId}/orders/{orderId}")
+    public ResponseEntity<?> updateOrder(@PathVariable Long storeId,
+                                         @PathVariable Long orderId,
+                                         @RequestParam(required = true) String status) {
+
+    }
 }

@@ -12,17 +12,15 @@ import java.util.List;
 @Table(name = "tb_order")
 @Getter
 @NoArgsConstructor
-public class OrderEntity{
+public class OrderEntity extends BaseTimeEntity{
     public enum Status {
         ORDERED, ACCEPTED, COOKING, CANCELLED
     }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
-    private LocalDateTime createdAt;
     @Enumerated(EnumType.STRING)
     private Status status;
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -37,9 +35,7 @@ public class OrderEntity{
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderMenuEntity> orderMenus = new ArrayList<>();
 
-
-    public OrderEntity(LocalDateTime createdAt, Status status, UserEntity user, StoreEntity store) {
-        this.createdAt = createdAt;
+    public OrderEntity(Status status, UserEntity user, StoreEntity store) {
         this.status = status;
         this.user = user;
         this.store = store;
@@ -47,4 +43,9 @@ public class OrderEntity{
     public void addReview(ReviewEntity review) {
         this.review = review;
     }
+
+    public static OrderEntity of(UserEntity user, StoreEntity store, Status status) {
+        return new OrderEntity(status, user, store);
+    }
+
 }

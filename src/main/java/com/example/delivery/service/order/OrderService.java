@@ -26,7 +26,7 @@ public class OrderService {
     private final UserRepository userRepository;
     private final OrderMapper orderMapper;
 
-    public ResponseOrderDto createOrder(RequestOrderDto request, Integer storeId, Integer userId) {
+    public ResponseOrderDto createOrder(RequestOrderDto request, Long storeId, Long userId) {
         // store 관련된 예외 만드실까봐 임시로 아무 예외 넣어놓음, 추후 수정
         // PathVariable로 받아온 id로 가게 조회
         StoreEntity store = storeRepository.findById(storeId)
