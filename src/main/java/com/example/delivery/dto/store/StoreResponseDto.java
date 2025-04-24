@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 public class StoreResponseDto {
-    private int id;
+    private Long id;
     private String name;
     private String open; //응답에서는 String 사용
     private String close;
