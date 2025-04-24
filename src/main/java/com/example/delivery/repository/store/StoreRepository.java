@@ -12,4 +12,6 @@ public interface StoreRepository extends JpaRepository<StoreEntity, Integer> {
     List<StoreEntity> findByUser(UserEntity user);
     // 가게 ID로 찾기
     Optional<StoreEntity> findById(int storeId);
+    //폐업안된 가게 찾기
+    List<StoreEntity> findByClosedFalse();
 }

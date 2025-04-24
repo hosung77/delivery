@@ -65,6 +65,21 @@ public class StoreService {
               savedStore.getMenus()
       );
    }
+   public List<StoreResponseDto> getAllStores() {
+      List<StoreEntity> stores = storeRepository.findByClosedFalse(); // 폐업되지 않은 가게만 조회
+
+      return stores.stream()
+              .map(store -> new StoreResponseDto(
+                      store.getStoreId(),
+                      store.getName(),
+                      store.getOpen(),
+                      store.getClose(),
+                      store.getMinOrderPrice(),
+                      store.getStatus().toString(),
+                      null // 메뉴 제외
+              ))
+              .collect(Collectors.toList());
+   }
 
    // 가게 목록 조회 서비스 (유저의 가게 목록 조회)
    public List<StoreResponseDto> getStoresByUser(String email) {

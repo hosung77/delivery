@@ -33,6 +33,13 @@ public class StoreController {
         return ResponseEntity.ok(stores);
     }
 
+    // 전체 가게 목록 조회
+    @GetMapping
+    public ResponseEntity<List<StoreResponseDto>> getAllStores() {
+        List<StoreResponseDto> stores = storeService.getAllStores();
+        return ResponseEntity.ok(stores);
+    }
+
     // 가게 단건 조회
     @GetMapping("/{storeId}")
     public ResponseEntity<StoreResponseDto> getStoreById(@PathVariable int storeId) {
