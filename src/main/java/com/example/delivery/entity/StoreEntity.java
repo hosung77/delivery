@@ -18,7 +18,7 @@ public class StoreEntity extends BaseTimeEntity{
     }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int storeId;
+    private Long storeId;
 
     @Column(nullable = false, length = 10, unique = true)
     private String name;
