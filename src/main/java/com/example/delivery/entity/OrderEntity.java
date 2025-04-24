@@ -18,7 +18,7 @@ public class OrderEntity{
     }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int orderId;
+    private Long orderId;
     private LocalDateTime createdAt;
     @Enumerated(EnumType.STRING)
     private Status status;

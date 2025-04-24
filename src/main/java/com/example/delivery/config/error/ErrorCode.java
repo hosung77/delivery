@@ -13,7 +13,11 @@ public enum ErrorCode {
     DUPLICATED_EMAIL("이미 등록된 이메일입니다.", HttpStatus.CONFLICT),
     SAME_PASSWORD("이전 비밀번호와 동일한 비밀번호로 변경할 수 없습니다.", HttpStatus.BAD_REQUEST),
     EMPTY_PROFILE_IMAGE("프로필 이미지가 비어 있습니다!", HttpStatus.BAD_REQUEST),
-    IMAGE_SAVE_FAIL("이미지 저장에 실패 했습니다!", HttpStatus.INTERNAL_SERVER_ERROR);
+    IMAGE_SAVE_FAIL("이미지 저장에 실패 했습니다!", HttpStatus.INTERNAL_SERVER_ERROR),
+    INVALID_TOKEN("토큰이 유효하지 않습니다. 다시 로그인 해주세요", HttpStatus.UNAUTHORIZED),
+    AUTH_UNAUTHORIZED("인증이 필요한 요청입니다", HttpStatus.UNAUTHORIZED),
+    FORBIDDEN("권한 없는 유저입니다.", HttpStatus.FORBIDDEN);
+
     private final String message;
     private final HttpStatus status;
 

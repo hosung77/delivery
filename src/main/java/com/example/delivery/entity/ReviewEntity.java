@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 public class ReviewEntity extends BaseTimeEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int reviewId;
+    private Long reviewId;
     private String comment;
     private boolean deleted;
 
