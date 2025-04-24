@@ -3,6 +3,7 @@ package com.example.delivery.config;
 import com.example.delivery.config.error.ErrorCode;
 import com.example.delivery.config.error.ErrorResponseDTO;
 import com.example.delivery.config.filter.JwtAuthenticationFilter;
+import com.example.delivery.config.filter.RoleFilter;
 import com.example.delivery.repository.auth.RefreshTokenRepository;
 import com.example.delivery.service.auth.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -72,14 +73,10 @@ public class SecurityConfig {
                 UsernamePasswordAuthenticationFilter.class);
         // Auth permitAll Endpoints
         http.authorizeHttpRequests(authorize -> authorize
-                .requestMatchers(HttpMethod.POST, "/api/users/*").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/auth/token").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/owners/*").hasAuthority("ROLE_OWNER")
-                .requestMatchers(HttpMethod.POST,"/api/owners/*").hasAuthority("ROLE_OWNER")
-                .requestMatchers(HttpMethod.GET, "/api/admin/*").hasAuthority("ROLE_ADMIN")
-                .requestMatchers(HttpMethod.POST,"/api/admin/*").hasAuthority("ROLE_ADMIN")
-                .anyRequest().authenticated()
-        );
+                .anyRequest().authenticated());
+
         // 예외처리는 하단 부에 적용
         http.exceptionHandling((handling) -> handling.authenticationEntryPoint(authenticationEntryPoint())
                 .accessDeniedHandler(accessDeniedHandler()));

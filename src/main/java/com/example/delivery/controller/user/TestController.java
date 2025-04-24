@@ -17,18 +17,18 @@ public class TestController {
 
     @GetMapping("/api/admin/test")
     public String test() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        authentication.getName();
-        if (authentication != null) {
-            // 권한 정보 가져오기
-            Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-            log.info(authorities.toString());
-            for (GrantedAuthority authority : authorities) {
-                System.out.println("권한: " + authority.getAuthority());
-            }
-        } else {
-            System.out.println("사용자가 인증되지 않았습니다.");
-        }
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        authentication.getName();
+//        if (authentication != null) {
+//            // 권한 정보 가져오기
+//            Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+//            log.info(authorities.toString());
+//            for (GrantedAuthority authority : authorities) {
+//                System.out.println("권한: " + authority.getAuthority());
+//            }
+//        } else {
+//            System.out.println("사용자가 인증되지 않았습니다.");
+//        }
         return "test";
     }
     @GetMapping("/api/owner/test")

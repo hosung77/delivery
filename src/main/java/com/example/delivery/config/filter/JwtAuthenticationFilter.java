@@ -50,6 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 		throws ServletException, IOException {
+		// 만약 헤더에서 하고 싶을 경우, 헤더에서 토큰을 파싱한다. 현재는 쿠키로 파싱
 		ParsedToken parsedToken = new ParsedToken(request.getCookies());
 
 
@@ -143,6 +144,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			String refreshToken = null;
 
 			if (cookies != null) {
+				// http 쿠키 있고 헤더 있음 헤더에서 oauth 값을 쿠키에 넣으면 편함
+				// 쿠키에 값넣는 로직을 빼면 토큰을 헤더에 줌
 				for (Cookie cookie : cookies) {
 					if (cookie.getName().equals(ACCESS_TOKEN_COOKIE)) {
 						accessToken = cookie.getValue();

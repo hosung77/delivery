@@ -15,7 +15,7 @@ import java.util.List;
 public class OrderMenuEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long orderMenuId;
 
     @ManyToOne
     @JoinColumn(name = "order_id")
