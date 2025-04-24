@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 @Getter
 public enum ErrorCode {
-    //
+
     USER_NOT_FOUND("존재하지 않는 사용자입니다", HttpStatus.UNAUTHORIZED),
     PASSWORD_MISMATCH("비밀번호가 일치하지 않습니다", HttpStatus.UNAUTHORIZED),
     DUPLICATED_EMAIL("이미 등록된 이메일입니다.", HttpStatus.CONFLICT),
@@ -16,9 +16,9 @@ public enum ErrorCode {
     IMAGE_SAVE_FAIL("이미지 저장에 실패 했습니다!", HttpStatus.INTERNAL_SERVER_ERROR),
     INVALID_TOKEN("토큰이 유효하지 않습니다. 다시 로그인 해주세요", HttpStatus.UNAUTHORIZED),
     AUTH_UNAUTHORIZED("인증이 필요한 요청입니다", HttpStatus.UNAUTHORIZED),
-    FORBIDDEN("권한 없는 유저입니다.", HttpStatus.FORBIDDEN);
+    FORBIDDEN("권한 없는 유저입니다.", HttpStatus.FORBIDDEN),
+    BAD_REQUEST("배달 완료된 주문만 리뷰 작성 가능합니다.", HttpStatus.BAD_REQUEST);
 
     private final String message;
     private final HttpStatus status;
-
 }
