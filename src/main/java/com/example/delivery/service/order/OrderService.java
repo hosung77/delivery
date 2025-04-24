@@ -42,6 +42,11 @@ public class OrderService {
         // 정적 메소드를 활용하여 order객체 생성
         OrderEntity order = OrderEntity.of(user, store, OrderEntity.Status.ORDERED);
 
+        // 영업시간 체크 (StoreEntity에서 직접 확인)
+        if (!store.isOperating()) {
+            throw new CustomException(ErrorCode.ORDER_NOT_FOUND); // 영업시간 아님, 임시 예외
+        }
+
         // 요청받은 주문 항목들을 순회하면서,
         // 각 메뉴 ID에 해당하는 실제 메뉴 정보를 매칭해 OrderMenuEntity로 변환한 뒤,
         // 현재 주문(order)에 모두 추가한다.
@@ -57,6 +62,15 @@ public class OrderService {
                 .toList();
 
         order.getOrderMenus().addAll(orderMenus);
+
+        // 최소 주문 금액 체크
+        int totalOrderPrice = orderMenus.stream()
+                .mapToInt(OrderMenuEntity::getTotalPrice)
+                .sum();
+
+        if (totalOrderPrice < store.getMinOrderPrice()) {
+            throw new CustomException(ErrorCode.ORDER_NOT_FOUND); // 임시 예외 나중에 수정
+        }
 
         orderRepository.save(order);
 
