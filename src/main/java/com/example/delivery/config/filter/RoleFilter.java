@@ -31,6 +31,7 @@ public class RoleFilter extends OncePerRequestFilter {
                 .contains(new SimpleGrantedAuthority("ROLE_USER"));
 
         Map<String, Set<String>> ownerPaths = new HashMap<>();
+        // static persist -> repo, entity
         ownerPaths.put("/api/stores", new HashSet<>(Arrays.asList("GET", "POST", "PUT","PATCH", "DELETE")));
         ownerPaths.put("/api/menus", new HashSet<>(Arrays.asList("GET", "POST", "PUT","PATCH", "DELETE")));
         ownerPaths.put("/api/reviews", new HashSet<>(Arrays.asList("GET", "POST","PUT")));

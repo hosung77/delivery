@@ -12,7 +12,7 @@ import java.util.List;
 @Table(name = "tb_order")
 @Getter
 @NoArgsConstructor
-public class OrderEntity{
+public class OrderEntity {
     public enum Status {
         ORDERED, ACCEPTED, COOKING, CANCELLED
     }
