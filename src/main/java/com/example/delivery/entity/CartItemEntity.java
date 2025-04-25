@@ -24,6 +24,14 @@ public class CartItemEntity {
     @JoinColumn(name = "menu_id")
     private MenuEntity menu;
 
+    @ManyToOne
+    @JoinColumn(name = "order_id")  // "order"라는 속성을 사용할 경우, "order"라는 필드명을 사용해야 합니다.
+    private OrderEntity order;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserEntity user;  // UserEntity와 연관관계 설정
+
     private int quantity;
 
     public CartItemEntity(CartEntity cart, MenuEntity menu, int quantity) {

@@ -35,7 +35,7 @@ public class OrderController {
         String id = (String) auth.getPrincipal(); // 토큰에 들어있던 subject 값
         Long userId = Long.parseLong(id); // String → Long 변환
 
-        ResponseOrderUpdateDto dto = orderService.updteOrder(orderId, status, userId);
+        ResponseOrderUpdateDto dto = orderService.updateOrder(orderId, status, userId);
 
         return ResponseEntity.ok().body(dto);
 

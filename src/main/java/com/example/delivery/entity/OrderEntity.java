@@ -37,8 +37,8 @@ public class OrderEntity extends BaseTimeEntity{
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderMenuEntity> orderMenus = new ArrayList<>();
 
-    @OneToMany(mappedBy = "order")
-    private List<CartItemEntity> cartItems;  // 주문된 카트 아이템들
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<CartItemEntity> cartItems;
 
 
     public OrderEntity(Status status, UserEntity user, StoreEntity store, List<CartItemEntity> cartItems) {

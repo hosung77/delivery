@@ -40,7 +40,7 @@ public class OrderService {
                 .orElseThrow(()-> new CustomException(ErrorCode.CART_NOT_FOUND));
 
         // 카트에서 물건들 가져오기
-        List<CartItemEntity> cartItems = cartItemRepository.findByUserId(userId);
+        List<CartItemEntity> cartItems = cartItemRepository.findByUser_UserId(userId);
 
         // 가게 정보 불러오기
         StoreEntity store = cart.getStore();

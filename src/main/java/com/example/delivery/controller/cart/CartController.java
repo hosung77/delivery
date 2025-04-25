@@ -28,7 +28,7 @@ public class CartController {
         return ResponseEntity.ok().body(dto);
     }
 
-    @PostMapping("{/menuId}")
+    @PostMapping("/{menuId}")
     ResponseEntity<String> addCartItem(@PathVariable Long menuId) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -41,7 +41,7 @@ public class CartController {
 
     }
 
-    @PatchMapping("{/menuId}")
+    @PatchMapping("/{menuId}")
     ResponseEntity<String> decreaseCartItem(@PathVariable Long menuId) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

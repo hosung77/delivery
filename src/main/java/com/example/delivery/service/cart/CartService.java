@@ -25,7 +25,6 @@ public class CartService {
     private final UserRepository userRepository;
     private final MenuRepository menuRepository;
     private final CartItemRepository cartItemRepository;
-    private final StoreRepository storeRepository;
 
     @Transactional
     public GetCartResponseDto viewCart(Long userId) {
