@@ -52,5 +52,17 @@ public class CartController {
         return ResponseEntity.ok().body("메뉴가 성공적으로 감소되었습니다.");
     }
 
+    @DeleteMapping
+    ResponseEntity<String> deleteCartItem() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String id = (String) authentication.getPrincipal();
+        Long userId = Long.parseLong(id);
+
+        cartService.deleteCartItem(userId);
+
+        return ResponseEntity.ok().body("카트 초기화가 완료되었습니다.");
+    }
+
+
 }
 
