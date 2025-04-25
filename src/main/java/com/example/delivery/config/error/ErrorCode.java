@@ -19,11 +19,12 @@ public enum ErrorCode {
     FORBIDDEN("권한 없는 유저입니다.", HttpStatus.FORBIDDEN),
     BAD_REQUEST("배달 완료된 주문만 리뷰 작성 가능합니다.", HttpStatus.BAD_REQUEST),
 
-
+    // 주문
     ORDER_NOT_FOUND("해당하는 주문을 찾을 수 없습니다.",HttpStatus.NOT_FOUND),
     ONER_NOT_MATCH("가게 사장님만이 주문을 관리할 수 있습니다.",HttpStatus.BAD_REQUEST),
-
     CART_NOT_FOUND("장바구니가 비어져 있습니다.", HttpStatus.NOT_FOUND),
+    DIFFERENT_STORE_ITEM("같은 가게의 메뉴만 담을 수 있습니다.", HttpStatus.BAD_REQUEST),
+    NOT_OVER_MINPRICE("최소 주문 금액 이상 주문을 해주셔야 합니다.", HttpStatus.BAD_REQUEST),
 
     NOT_MATCH_MENU("일치하는 메뉴가 없습니다.", HttpStatus.NOT_FOUND);
 

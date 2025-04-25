@@ -89,4 +89,13 @@ public class StoreEntity extends BaseTimeEntity {
         return !now.isBefore(open) && !now.isAfter(close);
     }
 
+    public boolean isSameStore(StoreEntity storeEntity) {
+        return this.storeId.equals(storeEntity.getStoreId());
+    }
+
+    // 최소 주문 금액 확인하는 메서드
+    public boolean isMinOrderPrice(int price) {
+        return price >= minOrderPrice;
+    }
+
 }

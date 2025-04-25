@@ -1,6 +1,7 @@
 package com.example.delivery.controller.cart;
 
 import com.example.delivery.dto.cart.response.GetCartResponseDto;
+import com.example.delivery.dto.cart.response.OrderedMenuResponseDto;
 import com.example.delivery.service.cart.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ public class CartController {
         return ResponseEntity.ok().body(dto);
     }
 
-    @PostMapping
+    @PostMapping("{/menuId}")
     ResponseEntity<String> addCartItem(@PathVariable Long menuId) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -40,7 +41,7 @@ public class CartController {
 
     }
 
-    @PatchMapping
+    @PatchMapping("{/menuId}")
     ResponseEntity<String> decreaseCartItem(@PathVariable Long menuId) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

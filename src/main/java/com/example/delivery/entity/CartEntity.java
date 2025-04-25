@@ -23,6 +23,14 @@ public class CartEntity extends BaseTimeEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_id", nullable = false)
+    private StoreEntity store;
+
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private OrderEntity order;  // 주문과의 연관
+
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItemEntity> cartItems = new ArrayList<>();
 
