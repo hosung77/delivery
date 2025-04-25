@@ -10,7 +10,6 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Setter
 @Builder  // 클래스에 @Builder를 한 번만 적용
-@Entity
 @Table(name = "tb_store")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
