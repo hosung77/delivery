@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Setter
+@Entity
 @Builder  // 클래스에 @Builder를 한 번만 적용
 @Table(name = "tb_store")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
