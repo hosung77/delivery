@@ -1,5 +1,8 @@
 package com.example.delivery.store;
 
+import com.example.delivery.config.error.CustomException;
+import com.example.delivery.dto.store.StoreRequestDto;
+import com.example.delivery.dto.store.StoreResponseDto;
 import com.example.delivery.entity.StoreEntity;
 import com.example.delivery.entity.UserEntity;
 import com.example.delivery.repository.store.StoreRepository;
@@ -9,11 +12,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import com.example.delivery.config.error.ErrorCode;
 
 import java.time.LocalTime;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 @SpringBootTest
 class StoreServiceTest {
@@ -28,6 +33,7 @@ class StoreServiceTest {
     private StoreRepository storeRepository;
 
     private UserEntity owner;
+    private UserEntity nonOwner;
 
     @BeforeEach
     void setUp() {
@@ -35,7 +41,7 @@ class StoreServiceTest {
         storeRepository.deleteAll();
         userRepository.deleteAll();
 
-        // 유저 생성
+        // 유저 생성: 사장님
         owner = UserEntity.builder()
                 .email("owner@example.com")
                 .password("1234")
@@ -43,6 +49,15 @@ class StoreServiceTest {
                 .roles(UserEntity.Role.OWNER)
                 .build();
         userRepository.save(owner);
+
+        // 유저 생성: 일반 사용자
+        nonOwner = UserEntity.builder()
+                .email("user@example.com")
+                .password("5678")
+                .name("일반 사용자")
+                .roles(UserEntity.Role.USER)
+                .build();
+        userRepository.save(nonOwner);
 
         // 가게 여러 개 저장
         StoreEntity store1 = StoreEntity.builder()
@@ -85,11 +100,35 @@ class StoreServiceTest {
 
         // then
         assertThat(result).hasSize(2); // 폐업된 가게는 제외되어야 하므로 두 개의 가게만 반환됨
-        assertThat(result.get(0).getName()).isEqualTo("김밥천국");//검증
+        assertThat(result.get(0).getName()).isEqualTo("김밥천국");
         assertThat(result.get(1).getName()).isEqualTo("불고기브라더스");
 
         // 결과 출력
         System.out.println("조회된 가게 목록: ");
         result.forEach(store -> System.out.println(store.getName()));
+    }
+
+    @Test
+    void 사장이_아닌_사용자가_가게_생성_시_예외_발생() {
+        // given: 일반 사용자 정보와 가게 정보
+        StoreRequestDto storeRequestDto = new StoreRequestDto("테스트 가게", "09:00", "22:00", 10000);
+
+        // when & then: 일반 사용자가 가게를 생성하려고 하면 예외가 발생해야 함
+        assertThatThrownBy(() -> storeService.createStore(storeRequestDto, nonOwner.getEmail()))
+                .isInstanceOf(CustomException.class)
+                .hasMessage(ErrorCode.STORE_OWNER_MISMATCH.getMessage());
+    }
+
+    @Test
+    void 사장이_가게_생성_성공() {
+        // given: 사장님 정보와 가게 정보
+        StoreRequestDto storeRequestDto = new StoreRequestDto("테스트 가게", "09:00", "22:00", 10000);
+
+
+        // when: 사장님이 가게를 생성
+        StoreResponseDto createdStore = storeService.createStore(storeRequestDto, owner.getEmail());
+
+        // then: 생성된 가게의 이름이 "테스트 가게"여야 함
+        assertThat(createdStore.getName()).isEqualTo("테스트 가게");
     }
 }
