@@ -23,7 +23,7 @@ public class StoreService {
       this.userRepository = userRepository;
    }
 
-   // 가게 생성 서비스
+   // 가게 생성 서비스 26 70 128 162
    public StoreResponseDto createStore(StoreRequestDto dto, String email) {
       // 1. 유저 정보 조회 (사장님 권한 확인)
       UserEntity user = userRepository.findByEmail(email)
@@ -139,11 +139,8 @@ public class StoreService {
          throw new RuntimeException("이 가게는 이 사용자가 소유한 가게가 아닙니다.");
       }
 
-      // 4. 가게 수정
-      store.setName(dto.getName());
-      store.setOpen(LocalTime.parse(dto.getOpen()));
-      store.setClose(LocalTime.parse(dto.getClose()));
-      store.setMinOrderPrice(dto.getMinOrderPrice());
+      // 4. DTO를 이용한 업데이트
+      dto.updateEntity(store);
 
       // 5. 저장 후 응답 DTO 반환
       StoreEntity updatedStore = storeRepository.save(store);
