@@ -40,4 +40,15 @@ public class ReviewEntity extends BaseTimeEntity {
         this.order = order;
         this.deleted = false;
     }
+
+    //삭제 메서드
+    public void delete() {
+        this.deleted = true;
+    }
+
+    //수정 메서드
+    public void update(String comment, int rating) {
+        this.comment = comment;
+        this.rating = rating;
+    }
 }
