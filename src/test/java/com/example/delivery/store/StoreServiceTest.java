@@ -1,5 +1,6 @@
 package com.example.delivery.store;
 
+import com.example.delivery.config.error.CustomException;
 import com.example.delivery.dto.store.StoreRequestDto;
 import com.example.delivery.dto.store.StoreResponseDto;
 import com.example.delivery.entity.StoreEntity;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import com.example.delivery.config.error.ErrorCode;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -113,8 +115,8 @@ class StoreServiceTest {
 
         // when & then: 일반 사용자가 가게를 생성하려고 하면 예외가 발생해야 함
         assertThatThrownBy(() -> storeService.createStore(storeRequestDto, nonOwner.getEmail()))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("가게는 사장만 생성할 수 있습니다.");
+                .isInstanceOf(CustomException.class)
+                .hasMessage(ErrorCode.STORE_OWNER_MISMATCH.getMessage());
     }
 
     @Test
