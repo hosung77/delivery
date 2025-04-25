@@ -1,4 +1,4 @@
-package com.example.delivery.dto.order;
+package com.example.delivery.dto.order.response;
 
 import com.example.delivery.entity.OrderEntity;
 import lombok.Getter;
