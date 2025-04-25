@@ -1,8 +1,8 @@
 package com.example.delivery.controller.order;
 
+import com.example.delivery.config.annotation.AdminOnlyLog;
 import com.example.delivery.dto.cart.response.GetCartResponseDto;
 import com.example.delivery.dto.order.response.ResponseOrderUpdateDto;
-import com.example.delivery.service.cart.CartService;
 import com.example.delivery.service.order.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +18,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
+    @AdminOnlyLog
     ResponseEntity<GetCartResponseDto> orderCart() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String id = (String) authentication.getPrincipal();
@@ -29,6 +30,7 @@ public class OrderController {
     }
 
     @PatchMapping("/{orderId}")
+    @AdminOnlyLog
     public ResponseEntity<?> updateOrder(@PathVariable Long orderId,
                                          @RequestParam(required = true) String status) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
