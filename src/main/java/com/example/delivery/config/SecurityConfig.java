@@ -75,6 +75,10 @@ public class SecurityConfig {
         http.authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/auth/token").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/users/*").hasAuthority("ROLE_ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/stores/*").hasAuthority("ROLE_ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/orders/*").hasAuthority("ROLE_ADMIN")
+
                 .anyRequest().authenticated());
 
         // 예외처리는 하단 부에 적용

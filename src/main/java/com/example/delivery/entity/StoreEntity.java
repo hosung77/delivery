@@ -1,6 +1,7 @@
 package com.example.delivery.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLRestriction;
@@ -9,15 +10,20 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Setter
+@Builder  // 클래스에 @Builder를 한 번만 적용
 @Entity
 @Table(name = "tb_store")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @SQLRestriction("deleted_at IS NULL")
-public class StoreEntity extends BaseTimeEntity{
+public class StoreEntity extends BaseTimeEntity {
+
     public enum Status {
         OPEN, CLOSE
     }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long storeId;
@@ -27,8 +33,10 @@ public class StoreEntity extends BaseTimeEntity{
 
     @Column(nullable = false)
     private LocalTime open;
+
     @Column(nullable = false)
     private LocalTime close;
+
     @Column(nullable = false)
     private int minOrderPrice;
 
@@ -36,14 +44,17 @@ public class StoreEntity extends BaseTimeEntity{
     private Status status; // 가게 열린지 닫혔는지 상태
 
     private boolean closed; // 폐업
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
+    @Builder.Default
     private List<MenuEntity> menus = new ArrayList<>();
 
-    public StoreEntity(String name, LocalTime open, LocalTime close, int minOrderPrice, Status status, boolean closed, UserEntity user) {
+    public StoreEntity(String name, LocalTime open, LocalTime close, int minOrderPrice,
+                       Status status, boolean closed, UserEntity user, List<MenuEntity> menus) {
         this.name = name;
         this.open = open;
         this.close = close;
@@ -51,11 +62,13 @@ public class StoreEntity extends BaseTimeEntity{
         this.status = status;
         this.closed = closed;
         this.user = user;
+        this.menus = menus;
     }
 
-    public void closed(){
+    public void closed() {
         this.closed = true;
     }
+
     public boolean isAvailable() {
         return !closed && status == Status.OPEN;
     }
