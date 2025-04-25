@@ -4,7 +4,9 @@ import com.example.delivery.config.error.CustomException;
 import com.example.delivery.config.error.ErrorCode;
 import com.example.delivery.dto.review.ReviewRequestDTO;
 import com.example.delivery.dto.review.ReviewResponseDTO;
-import com.example.delivery.entity.*;
+import com.example.delivery.entity.OrderEntity;
+import com.example.delivery.entity.ReviewEntity;
+import com.example.delivery.entity.UserEntity;
 import com.example.delivery.repository.review.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,10 @@ public class ReviewService {
             throw new CustomException(ErrorCode.BAD_REQUEST);
         }
 
+        if (reviewRepository.existsByOrder(order)) {
+            throw new CustomException(ErrorCode.ALREADY_REVIEWED);
+        }
+
         ReviewEntity review = new ReviewEntity(
                 dto.getComment(),
                 dto.getRating(),
@@ -36,6 +42,7 @@ public class ReviewService {
     public List<ReviewResponseDTO> getReviews(Long storeId, int min, int max) {
         return reviewRepository.findByStore_StoreIdAndRatingBetweenOrderByCreatedAtDesc(storeId, min, max)
                 .stream()
+                .filter(review -> !review.isDeleted())
                 .map(r -> new ReviewResponseDTO(
                         r.getReviewId(),
                         r.getComment(),
@@ -44,5 +51,29 @@ public class ReviewService {
                         r.getCreatedAt()
                 ))
                 .collect(Collectors.toList());
+    }
+
+    public void updateReview(Long reviewId, ReviewRequestDTO dto, UserEntity user) {
+        ReviewEntity review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
+
+        if (!review.getUser().getUserId().equals(user.getUserId())) {
+            throw new CustomException(ErrorCode.FORBIDDEN);
+        }
+
+        review.update(dto.getComment(), dto.getRating());
+        reviewRepository.save(review);
+    }
+
+    public void deleteReview(Long reviewId, UserEntity user) {
+        ReviewEntity review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
+
+        if (!review.getUser().getUserId().equals(user.getUserId())) {
+            throw new CustomException(ErrorCode.FORBIDDEN);
+        }
+
+        review.delete();
+        reviewRepository.save(review);
     }
 }
