@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 @Getter
 public enum ErrorCode {
-
+    // 유저
     USER_NOT_FOUND("존재하지 않는 사용자입니다", HttpStatus.UNAUTHORIZED),
     PASSWORD_MISMATCH("비밀번호가 일치하지 않습니다", HttpStatus.UNAUTHORIZED),
     DUPLICATED_EMAIL("이미 등록된 이메일입니다.", HttpStatus.CONFLICT),
@@ -19,10 +19,14 @@ public enum ErrorCode {
     FORBIDDEN("권한 없는 유저입니다.", HttpStatus.FORBIDDEN),
     BAD_REQUEST("배달 완료된 주문만 리뷰 작성 가능합니다.", HttpStatus.BAD_REQUEST),
 
-
+    // 스토어
+    STORE_NOT_FOUND("존재하지 않는 가게입니다.",HttpStatus.NOT_FOUND),
+    // 오더
     ORDER_NOT_FOUND("해당하는 주문을 찾을 수 없습니다.",HttpStatus.NOT_FOUND),
-    ONER_NOT_MATCH("가게 사장님만이 주문을 관리할 수 있습니다.",HttpStatus.BAD_REQUEST);
+    ONER_NOT_MATCH("가게 사장님만이 주문을 관리할 수 있습니다.",HttpStatus.BAD_REQUEST),
 
+    // 메뉴
+    MENU_NOT_FOUND("존재하지 않는 메뉴입니다.",HttpStatus.NOT_FOUND);
     private final String message;
     private final HttpStatus status;
 }

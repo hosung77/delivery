@@ -1,11 +1,15 @@
 package com.example.delivery.service.store;
 
+import com.example.delivery.config.error.CustomException;
+import com.example.delivery.config.error.ErrorCode;
 import com.example.delivery.dto.store.StoreRequestDto;
 import com.example.delivery.dto.store.StoreResponseDto;
 import com.example.delivery.entity.StoreEntity;
 import com.example.delivery.entity.UserEntity;
 import com.example.delivery.repository.store.StoreRepository;
 import com.example.delivery.repository.user.UserRepository;
+import com.example.delivery.service.auth.SecurityUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
@@ -13,21 +17,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class StoreService {
-
    private final StoreRepository storeRepository;
    private final UserRepository userRepository;
 
-   public StoreService(StoreRepository storeRepository, UserRepository userRepository) {
-      this.storeRepository = storeRepository;
-      this.userRepository = userRepository;
-   }
-
    // 가게 생성 서비스
-   public StoreResponseDto createStore(StoreRequestDto dto, String email) {
-      // 1. 유저 정보 조회 (사장님 권한 확인)
-      UserEntity user = userRepository.findByEmail(email)
-              .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
+   public StoreResponseDto createStore(StoreRequestDto dto) {
+      Long userId = SecurityUtil.getCurrentUserId();
+
+      UserEntity user = userRepository.findById(userId)
+              .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
       // 2. 사장님 권한 확인
       if (!user.getRoles().equals(UserEntity.Role.OWNER)) {
