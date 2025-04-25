@@ -5,33 +5,60 @@ import com.example.delivery.dto.review.ReviewResponseDTO;
 import com.example.delivery.entity.OrderEntity;
 import com.example.delivery.entity.UserEntity;
 import com.example.delivery.service.review.ReviewService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/reviews")
+@RequestMapping("/api/reviews") // 보통 api 경로에 /api 붙이는 걸 추천!
 @RequiredArgsConstructor
 public class ReviewController {
 
     private final ReviewService reviewService;
 
+    // 리뷰 작성
     @PostMapping
-    public void createReview(
-            @RequestBody ReviewRequestDTO dto,
+    public ResponseEntity<Void> createReview(
+            @Valid @RequestBody ReviewRequestDTO dto,
             @RequestAttribute UserEntity user,
             @RequestAttribute OrderEntity order
     ) {
         reviewService.createReview(dto, order, user);
+        return ResponseEntity.ok().build();
     }
 
+    // 리뷰 조회 (가게별)
     @GetMapping("/{storeId}")
-    public List<ReviewResponseDTO> getReviews(
+    public ResponseEntity<List<ReviewResponseDTO>> getReviews(
             @PathVariable Long storeId,
             @RequestParam(defaultValue = "1") int min,
             @RequestParam(defaultValue = "5") int max
     ) {
-        return reviewService.getReviews(storeId, min, max);
+        List<ReviewResponseDTO> reviews = reviewService.getReviews(storeId, min, max);
+        return ResponseEntity.ok(reviews);
+    }
+
+    // 리뷰 수정
+    @PutMapping("/{reviewId}")
+    public ResponseEntity<Void> updateReview(
+            @PathVariable Long reviewId,
+            @Valid @RequestBody ReviewRequestDTO dto,
+            @RequestAttribute UserEntity user
+    ) {
+        reviewService.updateReview(reviewId, dto, user);
+        return ResponseEntity.ok().build();
+    }
+
+    // 리뷰 삭제
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<Void> deleteReview(
+            @PathVariable Long reviewId,
+            @RequestAttribute UserEntity user
+    ) {
+        reviewService.deleteReview(reviewId, user);
+        return ResponseEntity.ok().build();
     }
 }
