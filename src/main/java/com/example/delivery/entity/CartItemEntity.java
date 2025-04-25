@@ -48,6 +48,10 @@ public class CartItemEntity {
         this.quantity += 1;
     }
 
+    public void decreaseQuantity() {
+        this.quantity -= 1;
+    }
+
 
 
 }

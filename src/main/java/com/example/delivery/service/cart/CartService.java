@@ -35,9 +35,7 @@ public class CartService {
 
         // 카트가 존재하는지 확인 후 없으면 생성
         CartEntity cart = cartRepository.findByUser(user)
-                .orElseGet(()->
-                    cartRepository.save(CartEntity.of(user))
-                );
+                .orElseThrow(()-> new CustomException(ErrorCode.C))
 
         // 카트에 있는 메뉴들을 조회 및 dto로 변환하여 list 형태로 반환
         List<GetCartResponseDto.CartItemDto> itemDtos = cart.getCartItems().stream()
@@ -76,7 +74,7 @@ public class CartService {
                 .orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         CartItemEntity existingItem = cart.getCartItems().stream()
-                .filter(item -> item.getMenu().getName().equals(menu.getName()))
+                .filter(item -> item.getMenu().getName().equals(menuId))
                 .findFirst()
                 .orElse(null);
 
@@ -89,4 +87,35 @@ public class CartService {
         }
 
     }
+
+    @Transactional
+    public void decreaseCartItem(Long menuId, Long userId) {
+
+        // 유저가 존재하는지 확인
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        // 카트가 존재하는지 확인
+        CartEntity cart = cartRepository.findByUser(user)
+                .orElseThrow(()-> new CustomException(ErrorCode.CART_NOT_FOUND));
+
+        // 메뉴가 존재하는지 확인, 임시 예외
+        MenuEntity menu = menuRepository.findById(menuId)
+                .orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        CartItemEntity presentCart = cart.getCartItems().stream()
+                .filter(item -> item.getMenu().getMenuId().equals(menuId))
+                .findFirst()
+                .orElseThrow(()->new CustomException(ErrorCode.NOT_MATCH_MENU));
+
+        presentCart.decreaseQuantity();
+
+        if(presentCart.getQuantity() == 0){
+            cartItemRepository.delete(presentCart);
+        } else{
+            cartItemRepository.save(presentCart);
+        }
+
+    }
+
 }

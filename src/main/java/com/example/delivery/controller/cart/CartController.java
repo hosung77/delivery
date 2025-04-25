@@ -40,6 +40,17 @@ public class CartController {
 
     }
 
+    @PatchMapping
+    ResponseEntity<String> decreaseCartItem(@PathVariable Long menuId) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String id = (String) authentication.getPrincipal();
+        Long userId = Long.parseLong(id);
+
+        cartService.decreaseCartItem(menuId, userId);
+
+        return ResponseEntity.ok().body("메뉴가 성공적으로 감소되었습니다.");
+    }
 
 }
 
