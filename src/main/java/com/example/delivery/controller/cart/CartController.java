@@ -6,9 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/cart")
@@ -28,6 +26,20 @@ public class CartController {
 
         return ResponseEntity.ok().body(dto);
     }
+
+    @PostMapping
+    ResponseEntity<String> addCartItem(@PathVariable Long menuId) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String id = (String) authentication.getPrincipal();
+        Long userId = Long.parseLong(id);
+
+        cartService.addCartItem(menuId, userId);
+
+        return ResponseEntity.ok().body("메뉴가 성공적으로 추가되었습니다.");
+
+    }
+
 
 }
 

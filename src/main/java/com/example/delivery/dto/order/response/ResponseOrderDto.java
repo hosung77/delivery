@@ -10,19 +10,19 @@ import java.util.List;
 @Getter
 public class ResponseOrderDto {
 
-    private final Long orderId;
-    private final String status;
-    private final LocalDateTime createdAt;
-    private final StoreInfo store;
-    private final List<MenuInfo> orderItems;
-    private final int totalAmount;
+    private Long orderId;
+    private String status;
+    private LocalDateTime createdAt;
+    private StoreInfo store;
+    private List<MenuInfo> orderItems;
+    private int totalAmount;
 
     @Getter
     public static class StoreInfo {
-        private final Integer storeId;
-        private final String storeName;
+        private Long storeId;
+        private String storeName;
 
-        public StoreInfo(Integer storeId, String storeName) {
+        public StoreInfo(Long storeId, String storeName) {
             this.storeId = storeId;
             this.storeName = storeName;
         }
@@ -30,11 +30,11 @@ public class ResponseOrderDto {
 
     @Getter
     public static class MenuInfo {
-        private final Long menuId;
-        private final String name;
-        private final int price;
-        private final int quantity;
-        private final int totalPrice;
+        private Long menuId;
+        private String name;
+        private int price;
+        private int quantity;
+        private int totalPrice;
 
         public MenuInfo(Long menuId, String name, int price, int quantity, int totalPrice) {
             this.menuId = menuId;
@@ -44,6 +44,4 @@ public class ResponseOrderDto {
             this.totalPrice = totalPrice;
         }
     }
-
-
 }

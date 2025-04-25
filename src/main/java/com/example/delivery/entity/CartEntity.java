@@ -33,4 +33,9 @@ public class CartEntity extends BaseTimeEntity {
     public void clearCart() {
         this.cartItems.clear();
     }
+
+    public static CartEntity of(UserEntity user) {
+        return new CartEntity(user);
+    }
+
 }

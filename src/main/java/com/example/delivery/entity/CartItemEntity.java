@@ -32,6 +32,10 @@ public class CartItemEntity {
         this.quantity = quantity;
     }
 
+    public static CartItemEntity of (CartEntity cart, MenuEntity menu, int quantity) {
+        return new CartItemEntity(cart, menu, quantity);
+    }
+
     public int getTotalPrice() {
         return menu.getPrice() * quantity;
     }
@@ -39,4 +43,11 @@ public class CartItemEntity {
     public void changeQuantity(int quantity) {
         this.quantity = quantity;
     }
+
+    public void addQuantity() {
+        this.quantity += 1;
+    }
+
+
+
 }
