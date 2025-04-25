@@ -28,16 +28,14 @@ public class OrderController {
         return ResponseEntity.ok().body(orderedMenu);
     }
 
-    @PatchMapping("/{storeId}/orders/{orderId}")
-    public ResponseEntity<?> updateOrder(@PathVariable Long storeId,
-                                         @PathVariable Long orderId,
+    @PatchMapping("/{orderId}")
+    public ResponseEntity<?> updateOrder(@PathVariable Long orderId,
                                          @RequestParam(required = true) String status) {
-
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String id = (String) auth.getPrincipal(); // 토큰에 들어있던 subject 값
         Long userId = Long.parseLong(id); // String → Long 변환
 
-        ResponseOrderUpdateDto dto = orderService.updateOrder(storeId, orderId, status, userId);
+        ResponseOrderUpdateDto dto = orderService.updteOrder(orderId, status, userId);
 
         return ResponseEntity.ok().body(dto);
 

@@ -28,6 +28,7 @@ public class OrderService {
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
 
+    @Transactional
     public GetCartResponseDto orderCart(Long userId) {
 
         // 존재하는 유저인지 확인
@@ -74,11 +75,7 @@ public class OrderService {
     }
 
     @Transactional
-    public ResponseOrderUpdateDto updateOrder(Long storeId, Long orderId, String status, Long userId) {
-        // 가게 조회
-        StoreEntity store = storeRepository.findById(storeId)
-                .orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
-
+    public ResponseOrderUpdateDto updateOrder(Long orderId, String status, Long userId) {
         // 쿠키에서 받아온 유저 아이디로 유저 조회
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -86,6 +83,9 @@ public class OrderService {
         // 주문 조회
         OrderEntity order = orderRepository.findById(orderId)
                 .orElseThrow(()-> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+
+        // 가게 정보 가져오기
+        StoreEntity store = order.getStore();
 
         if(!store.isOwner(userId)){
             throw new CustomException(ErrorCode.ONER_NOT_MATCH);
