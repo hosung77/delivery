@@ -21,8 +21,8 @@ public class StoreController {
 
     // 가게 생성
     @PostMapping
-    public ResponseEntity<StoreResponseDto> createStore(@RequestBody StoreRequestDto dto, @RequestAttribute UserEntity user) {
-        StoreResponseDto storeResponse = storeService.createStore(dto, user.getEmail());
+    public ResponseEntity<StoreResponseDto> createStore(@RequestBody StoreRequestDto dto) {
+        StoreResponseDto storeResponse = storeService.createStore(dto);
         return ResponseEntity.ok(storeResponse);
     }
 

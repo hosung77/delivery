@@ -10,13 +10,12 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity(name = "tb_store")
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Setter
 @Builder  // 클래스에 @Builder를 한 번만 적용
-@Table(name = "tb_store")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@SQLRestriction("deleted_at IS NULL")
 public class StoreEntity extends BaseTimeEntity {
 
     public enum Status {
