@@ -51,6 +51,7 @@ public class CartService {
 
     }
 
+    @Transactional
     public void addCartItem(Long menuId, Long userId) {
 
         // 유저가 존재하는지 확인
@@ -120,6 +121,7 @@ public class CartService {
 
     }
 
+    @Transactional
     public void deleteCartItem(Long userId) {
 
         // 유저가 존재하는지 확인

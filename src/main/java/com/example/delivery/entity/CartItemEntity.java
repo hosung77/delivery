@@ -9,7 +9,6 @@ import org.hibernate.annotations.SQLRestriction;
 @Table(name = "tb_cart_item")
 @Getter
 @NoArgsConstructor
-@SQLRestriction("deleted_at IS NULL")
 public class CartItemEntity {
 
     @Id

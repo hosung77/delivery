@@ -12,7 +12,6 @@ import java.util.List;
 @Table(name = "tb_cart")
 @Getter
 @NoArgsConstructor
-@SQLRestriction("deleted_at IS NULL")
 public class CartEntity extends BaseTimeEntity {
 
     @Id
