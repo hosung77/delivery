@@ -21,7 +21,11 @@ public enum ErrorCode {
 
 
     ORDER_NOT_FOUND("해당하는 주문을 찾을 수 없습니다.",HttpStatus.NOT_FOUND),
-    ONER_NOT_MATCH("가게 사장님만이 주문을 관리할 수 있습니다.",HttpStatus.BAD_REQUEST);
+    ONER_NOT_MATCH("가게 사장님만이 주문을 관리할 수 있습니다.",HttpStatus.BAD_REQUEST),
+
+    STORE_LIMIT_EXCEEDED("최대 3개의 가게만 등록 가능합니다.", HttpStatus.BAD_REQUEST),
+    STORE_NOT_FOUND("해당하는 가게를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    STORE_OWNER_MISMATCH("이 가게의 소유자가 아닙니다.", HttpStatus.FORBIDDEN);
 
     private final String message;
     private final HttpStatus status;
