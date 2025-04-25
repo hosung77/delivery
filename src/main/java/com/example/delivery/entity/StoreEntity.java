@@ -84,4 +84,8 @@ public class StoreEntity extends BaseTimeEntity {
         return !now.isBefore(open) && !now.isAfter(close);
     }
 
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
 }
