@@ -8,6 +8,9 @@ import com.example.delivery.entity.StoreEntity;
 import com.example.delivery.entity.UserEntity;
 import com.example.delivery.repository.store.StoreRepository;
 import com.example.delivery.repository.user.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
@@ -16,16 +19,12 @@ import java.util.stream.Collectors;
 
 import static com.example.delivery.config.error.ErrorCode.*;
 
+@RequiredArgsConstructor
 @Service
 public class StoreService {
 
    private final StoreRepository storeRepository;
    private final UserRepository userRepository;
-
-   public StoreService(StoreRepository storeRepository, UserRepository userRepository) {
-      this.storeRepository = storeRepository;
-      this.userRepository = userRepository;
-   }
 
    // 가게 생성 서비스 26 70 128 162
    public StoreResponseDto createStore(StoreRequestDto dto, String email) {
@@ -160,7 +159,7 @@ public class StoreService {
    }
 
    // 가게 폐업 서비스
-   public String closeStore(Long storeId, String email) {
+   public  ResponseEntity<String> closeStore(Long storeId, String email) {
       // 1. 유저 정보 조회 (사장님 권한 확인)
       UserEntity user = userRepository.findByEmail(email)
               .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -178,6 +177,6 @@ public class StoreService {
       store.setStatus(StoreEntity.Status.CLOSE);
       storeRepository.save(store);
 
-      return "가게가 폐업되었습니다.";
+      return  new ResponseEntity<>("가게가 폐업되었습니다.", HttpStatus.OK);
    }
 }
