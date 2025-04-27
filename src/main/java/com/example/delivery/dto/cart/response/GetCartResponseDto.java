@@ -12,14 +12,14 @@ import java.util.List;
 public class GetCartResponseDto {
     private List<CartItemDto> items;
     private int totalAmount;
-    private Long cartId;
+    private Long orderId;
     private StoreDto store;
 
-    public static GetCartResponseDto of(List<CartItemDto> items, int totalAmount, Long cartId, StoreEntity store) {
+    public static GetCartResponseDto of(List<CartItemDto> items, int totalAmount, Long orderId, StoreEntity store) {
         return new GetCartResponseDto(
                 items,
                 totalAmount,
-                cartId,
+                orderId,
                 new StoreDto(store.getStoreId(), store.getName()
                 ));
     }

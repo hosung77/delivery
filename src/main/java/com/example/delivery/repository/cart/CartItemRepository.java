@@ -11,5 +11,5 @@ import java.util.List;
 public interface CartItemRepository extends JpaRepository<CartItemEntity, Long> {
     void deleteAllByCart(CartEntity cart);
 
-    List<CartItemEntity> findByUser_UserId(Long userId);  // userId 기준으로 검색
+    List<CartItemEntity> findByCart(CartEntity cart);  // userId 기준으로 검색
 }

@@ -3,6 +3,7 @@ package com.example.delivery.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.List;
 @Table(name = "tb_cart")
 @Getter
 @NoArgsConstructor
+@ToString
 public class CartEntity extends BaseTimeEntity {
 
     @Id
@@ -33,16 +35,17 @@ public class CartEntity extends BaseTimeEntity {
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItemEntity> cartItems = new ArrayList<>();
 
-    public CartEntity(UserEntity user) {
+    public CartEntity(UserEntity user,StoreEntity store) {
         this.user = user;
+        this.store = store;
     }
 
     public void clearCart() {
         this.cartItems.clear();
     }
 
-    public static CartEntity of(UserEntity user) {
-        return new CartEntity(user);
+    public static CartEntity of(UserEntity user, StoreEntity store) {
+        return new CartEntity(user,store);
     }
 
 }

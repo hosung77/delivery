@@ -16,6 +16,7 @@ import java.util.List;
 @Getter
 @Builder
 @AllArgsConstructor
+@ToString
 public class UserEntity extends BaseTimeEntity{
     public enum Role{
         ADMIN, USER, OWNER

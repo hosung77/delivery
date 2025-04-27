@@ -38,17 +38,27 @@ public class RoleFilter extends OncePerRequestFilter {
 
         Map<String, Set<String>> userPaths = new HashMap<>();
         userPaths.put("/api/stores", new HashSet<>(List.of("GET")));
+        userPaths.put("/api/order", new HashSet<>(List.of("GET", "POST", "PUT","PATCH", "DELETE")));
         userPaths.put("/api/reviews", new HashSet<>(List.of("GET","POST","PUT")));
         if (ownerPaths.containsKey(path)) {
             Set<String> allowedMethods = ownerPaths.get(path);
-            if (!allowedMethods.contains(method) && !isOwner) {
-                throw new CustomException(ErrorCode.FORBIDDEN);
+            if (!allowedMethods.contains(method)) {
+                if (!isOwner) {
+                    throw new CustomException(ErrorCode.FORBIDDEN);
+                }
+                filterChain.doFilter(request,response);
+                return;
             }
         }
+
         if (userPaths.containsKey(path)) {
             Set<String> allowedMethods = userPaths.get(path);
-            if (!allowedMethods.contains(method) && !isUser) {
-                throw new CustomException(ErrorCode.FORBIDDEN);
+            if (!allowedMethods.contains(method)) {
+                if (!isUser) {
+                    throw new CustomException(ErrorCode.FORBIDDEN);
+                }
+                filterChain.doFilter(request,response);
+                return;
             }
         }
 
