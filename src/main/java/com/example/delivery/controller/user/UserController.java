@@ -15,36 +15,23 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
-@Controller
+@RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
-    private static final Logger log = LoggerFactory.getLogger(UserController.class);
     private final UserService userService;
-    private final UserDetailsService userDetailsService;
     @PostMapping
-    @ResponseBody
     public ResponseEntity<Void> createUser(
-            @RequestBody UserReqDTO user) {
+            @RequestBody UserReqDTO user
+    ) {
         userService.createUser(user);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
-
-    @GetMapping("/test")
-    public ResponseEntity<String> adminOnlyApi() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null) {
-            // 권한 정보 가져오기
-            Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-            log.info(authorities.toString());
-            for (GrantedAuthority authority : authorities) {
-                System.out.println("권한: " + authority.getAuthority());
-            }
-        } else {
-            System.out.println("사용자가 인증되지 않았습니다.");
-        }
-
-        return ResponseEntity.ok("Owner access granted");
+    @PutMapping
+    public ResponseEntity<Void> updateUser(
+            @RequestBody UserReqDTO user
+    ){
+        return null;
     }
 
 

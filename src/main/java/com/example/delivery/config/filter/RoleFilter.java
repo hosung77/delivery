@@ -25,11 +25,12 @@ public class RoleFilter extends OncePerRequestFilter {
         logger.info("path: " + path);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         boolean isAuthenticated = authentication != null && authentication.isAuthenticated();
-        boolean isOwner = isAuthenticated && authentication.getAuthorities()
-                .contains(new SimpleGrantedAuthority("ROLE_OWNER"));
-        boolean isUser = isAuthenticated && authentication.getAuthorities()
-                .contains(new SimpleGrantedAuthority("ROLE_USER"));
+        boolean isOwner = isAuthenticated && authentication.getAuthorities().stream()
+                .anyMatch(auth -> "ROLE_OWNER".equals(auth.getAuthority()));
+        boolean isUser = isAuthenticated && authentication.getAuthorities().stream()
+                .anyMatch(auth -> "ROLE_USER".equals(auth.getAuthority()));
 
+        logger.info("현재 권한 : " + isOwner);
         Map<String, Set<String>> ownerPaths = new HashMap<>();
         // static persist -> repo, entity
         ownerPaths.put("/api/stores", new HashSet<>(Arrays.asList("GET", "POST", "PUT","PATCH", "DELETE")));
@@ -41,17 +42,26 @@ public class RoleFilter extends OncePerRequestFilter {
         userPaths.put("/api/reviews", new HashSet<>(List.of("GET","POST","PUT")));
         if (ownerPaths.containsKey(path)) {
             Set<String> allowedMethods = ownerPaths.get(path);
-            if (!allowedMethods.contains(method) && !isOwner) {
-                throw new CustomException(ErrorCode.FORBIDDEN);
+            if (!allowedMethods.contains(method)) {
+                if (!isOwner) {
+                    throw new CustomException(ErrorCode.FORBIDDEN);
+                }
             }
-        }
-        if (userPaths.containsKey(path)) {
-            Set<String> allowedMethods = userPaths.get(path);
-            if (!allowedMethods.contains(method) && !isUser) {
-                throw new CustomException(ErrorCode.FORBIDDEN);
-            }
+            filterChain.doFilter(request, response);
+            return;
         }
 
+        if (userPaths.containsKey(path)) {
+            Set<String> allowedMethods = userPaths.get(path);
+            if (!allowedMethods.contains(method)) {
+                if (!isUser) {
+                    throw new CustomException(ErrorCode.FORBIDDEN);
+                }
+            }
+            // user 권한 통과했으면 여기서 끝
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         filterChain.doFilter(request,response);
     }
