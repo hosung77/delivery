@@ -12,6 +12,7 @@ import com.example.delivery.repository.store.StoreRepository;
 import com.example.delivery.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +21,7 @@ import static com.example.delivery.entity.OrderMenuEntity.toOrderMenu;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderService {
 
     private final OrderRepository orderRepository;
@@ -35,19 +37,25 @@ public class OrderService {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
 
+        log.info("user: {}", user);
+
         // 유저의 카트 불러오기
         CartEntity cart = cartRepository.findByUser(user)
                 .orElseThrow(()-> new CustomException(ErrorCode.CART_NOT_FOUND));
 
+        log.info("cart: {}", cart);
+
         // 카트에서 물건들 가져오기
-        List<CartItemEntity> cartItems = cartItemRepository.findByUser_UserId(userId);
+        List<CartItemEntity> cartItems = cartItemRepository.findByCart(cart);
+
+        log.info("cartItems: {}", cartItems);
 
         // 가게 정보 불러오기
         StoreEntity store = cart.getStore();
 
         // 가게가 열었는지 확인
         if(!store.isOperating()){
-            throw new CustomException(ErrorCode.USER_NOT_FOUND); // 임시 예외 사용
+            throw new CustomException(ErrorCode.STORE_NOT_FOUND); // 임시 예외 사용
         }
 
         // 카트에 담긴 물건들을 dto로 변환

@@ -11,7 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/stores/order")
+@RequestMapping("/api/order")
 @RequiredArgsConstructor
 public class OrderController {
 
@@ -21,8 +21,7 @@ public class OrderController {
     @AdminOnlyLog
     ResponseEntity<GetCartResponseDto> orderCart() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String id = (String) authentication.getPrincipal();
-        Long userId = Long.parseLong(id);
+        Long userId = (Long) authentication.getPrincipal(); // getPrincipal()이 Long 타입이라면, 이를 Long으로 캐스팅
 
         GetCartResponseDto orderedMenu = orderService.orderCart(userId);
 
@@ -31,15 +30,13 @@ public class OrderController {
 
     @PatchMapping("/{orderId}")
     @AdminOnlyLog
-    public ResponseEntity<?> updateOrder(@PathVariable Long orderId,
+    public ResponseEntity<ResponseOrderUpdateDto> updateOrder(@PathVariable Long orderId,
                                          @RequestParam(required = true) String status) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String id = (String) auth.getPrincipal(); // 토큰에 들어있던 subject 값
-        Long userId = Long.parseLong(id); // String → Long 변환
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long userId = (Long) authentication.getPrincipal(); // getPrincipal()이 Long 타입이라면, 이를 Long으로 캐스팅
 
         ResponseOrderUpdateDto dto = orderService.updateOrder(orderId, status, userId);
 
         return ResponseEntity.ok().body(dto);
-
     }
 }

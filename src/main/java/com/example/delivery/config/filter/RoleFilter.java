@@ -38,6 +38,7 @@ public class RoleFilter extends OncePerRequestFilter {
 
         Map<String, Set<String>> userPaths = new HashMap<>();
         userPaths.put("/api/stores", new HashSet<>(List.of("GET")));
+        userPaths.put("/api/order", new HashSet<>(List.of("GET", "POST", "PUT","PATCH", "DELETE")));
         userPaths.put("/api/reviews", new HashSet<>(List.of("GET","POST","PUT")));
         if (ownerPaths.containsKey(path)) {
             Set<String> allowedMethods = ownerPaths.get(path);

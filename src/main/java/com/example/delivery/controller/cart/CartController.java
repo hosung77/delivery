@@ -1,5 +1,6 @@
 package com.example.delivery.controller.cart;
 
+import com.example.delivery.dto.cart.response.CartResponseDto;
 import com.example.delivery.dto.cart.response.GetCartResponseDto;
 import com.example.delivery.dto.cart.response.OrderedMenuResponseDto;
 import com.example.delivery.service.cart.CartService;
@@ -20,8 +21,7 @@ public class CartController {
     ResponseEntity<GetCartResponseDto> viewCart() {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String id = (String) authentication.getPrincipal();
-        Long userId = Long.parseLong(id);
+        Long userId = (Long) authentication.getPrincipal(); // getPrincipal()이 Long 타입이라면, 이를 Long으로 캐스팅
 
         GetCartResponseDto dto = cartService.viewCart(userId);
 
@@ -29,39 +29,33 @@ public class CartController {
     }
 
     @PostMapping("/{menuId}")
-    ResponseEntity<String> addCartItem(@PathVariable Long menuId) {
-
+    ResponseEntity<CartResponseDto> addCartItem(@PathVariable Long menuId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String id = (String) authentication.getPrincipal();
-        Long userId = Long.parseLong(id);
+        Long userId = (Long) authentication.getPrincipal(); // getPrincipal()이 Long 타입이라면, 이를 Long으로 캐스팅
 
-        cartService.addCartItem(menuId, userId);
+        CartResponseDto dto = cartService.addCartItem(menuId, userId);
 
-        return ResponseEntity.ok().body("메뉴가 성공적으로 추가되었습니다.");
-
+        return ResponseEntity.ok().body(dto);
     }
 
     @PatchMapping("/{menuId}")
-    ResponseEntity<String> decreaseCartItem(@PathVariable Long menuId) {
-
+    ResponseEntity<CartResponseDto> decreaseCartItem(@PathVariable Long menuId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String id = (String) authentication.getPrincipal();
-        Long userId = Long.parseLong(id);
+        Long userId = (Long) authentication.getPrincipal(); // getPrincipal()이 Long 타입이라면, 이를 Long으로 캐스팅
 
-        cartService.decreaseCartItem(menuId, userId);
+        CartResponseDto dto = cartService.decreaseCartItem(menuId, userId);
 
-        return ResponseEntity.ok().body("메뉴가 성공적으로 감소되었습니다.");
+        return ResponseEntity.ok().body(dto);
     }
 
     @DeleteMapping
-    ResponseEntity<String> deleteCartItem() {
+    ResponseEntity<CartResponseDto> deleteCartItem() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String id = (String) authentication.getPrincipal();
-        Long userId = Long.parseLong(id);
+        Long userId = (Long) authentication.getPrincipal(); // getPrincipal()이 Long 타입이라면, 이를 Long으로 캐스팅
 
-        cartService.deleteCartItem(userId);
+        CartResponseDto dto = cartService.deleteCartItem(userId);
 
-        return ResponseEntity.ok().body("카트 초기화가 완료되었습니다.");
+        return ResponseEntity.ok().body(dto);
     }
 
 
