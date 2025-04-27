@@ -37,17 +37,23 @@ public class OrderEntity extends BaseTimeEntity{
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderMenuEntity> orderMenus = new ArrayList<>();
 
-    public OrderEntity(Status status, UserEntity user, StoreEntity store) {
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<CartItemEntity> cartItems;
+
+
+    public OrderEntity(Status status, UserEntity user, StoreEntity store, List<CartItemEntity> cartItems) {
         this.status = status;
         this.user = user;
         this.store = store;
+        this.cartItems = cartItems;
     }
+
     public void addReview(ReviewEntity review) {
         this.review = review;
     }
 
-    public static OrderEntity of(UserEntity user, StoreEntity store, Status status) {
-        return new OrderEntity(status, user, store);
+    public static OrderEntity of(UserEntity user, StoreEntity store, Status status, List<CartItemEntity> cartItems) {
+        return new OrderEntity(status, user, store, cartItems);
     }
 
     public void updateStatus(Status status) {

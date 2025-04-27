@@ -8,6 +8,7 @@ import com.example.delivery.entity.StoreEntity;
 import com.example.delivery.entity.UserEntity;
 import com.example.delivery.repository.store.StoreRepository;
 import com.example.delivery.repository.user.UserRepository;
+import com.example.delivery.service.auth.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,20 +18,20 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.example.delivery.config.error.ErrorCode.*;
-
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class StoreService {
 
    private final StoreRepository storeRepository;
    private final UserRepository userRepository;
 
    // 가게 생성 서비스 26 70 128 162
-   public StoreResponseDto createStore(StoreRequestDto dto, String email) {
-      // 1. 유저 정보 조회 (사장님 권한 확인)
-      UserEntity user = userRepository.findByEmail(email)
-              .orElseThrow(() -> new CustomException(USER_NOT_FOUND));//
+   public StoreResponseDto createStore(StoreRequestDto dto) {
+       Long userId = SecurityUtil.getCurrentUserId();
+
+       UserEntity user = userRepository.findById(userId)
+               .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+       // 1. 유저 정보 조회 (사장님 권한 확인)
 
       // 2. 사장님 권한 확인
       if (!user.getRoles().equals(UserEntity.Role.OWNER)) {

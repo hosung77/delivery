@@ -1,6 +1,8 @@
 package com.example.delivery.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,9 +13,11 @@ import java.util.List;
 @Table(name = "tb_menu")
 @NoArgsConstructor
 @Getter
+@Builder
+@AllArgsConstructor
 public class MenuEntity extends BaseTimeEntity{
     public enum Status {
-        SELLING, SOLD_OUT
+        SELLING, SOLD_OUT, DELETED
     }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,9 +33,15 @@ public class MenuEntity extends BaseTimeEntity{
     @JoinColumn(name = "store_id", nullable = false)
     private StoreEntity store;
 
-    public MenuEntity(String name, int price, Status status) {
+    public void update(String name, Integer price, Status status) {
         this.name = name;
         this.price = price;
         this.status = status;
+    }
+    public void delete(){
+        this.status = Status.DELETED;
+    }
+    public void soldOut(){
+        this.status = Status.SOLD_OUT;
     }
 }

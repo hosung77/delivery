@@ -2,15 +2,17 @@ package com.example.delivery.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity(name = "tb_store")
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Entity
 @Builder  // 클래스에 @Builder를 한 번만 적용
-@Table(name = "tb_store")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class StoreEntity extends BaseTimeEntity {
@@ -82,6 +84,15 @@ public class StoreEntity extends BaseTimeEntity {
         // 현재 시간 체크 (영업시간 체크)
         LocalTime now = LocalTime.now();
         return !now.isBefore(open) && !now.isAfter(close);
+    }
+
+    public boolean isSameStore(StoreEntity storeEntity) {
+        return this.storeId.equals(storeEntity.getStoreId());
+    }
+
+    // 최소 주문 금액 확인하는 메서드
+    public boolean isMinOrderPrice(int price) {
+        return price >= minOrderPrice;
     }
 
     public void setStatus(Status status) {

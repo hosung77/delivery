@@ -17,6 +17,9 @@ public class TestController {
 
     @GetMapping("/api/admin/test")
     public String test() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long a = Long.parseLong(authentication.getName());
+        log.info(a + "현재 아디");
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //        authentication.getName();
 //        if (authentication != null) {

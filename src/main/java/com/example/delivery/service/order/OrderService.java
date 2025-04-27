@@ -2,11 +2,11 @@ package com.example.delivery.service.order;
 
 import com.example.delivery.config.error.CustomException;
 import com.example.delivery.config.error.ErrorCode;
-import com.example.delivery.dto.order.RequestOrderDto;
-import com.example.delivery.dto.order.ResponseOrderDto;
-import com.example.delivery.dto.order.ResponseOrderUpdateDto;
+import com.example.delivery.dto.cart.response.GetCartResponseDto;
+import com.example.delivery.dto.order.response.ResponseOrderUpdateDto;
 import com.example.delivery.entity.*;
-import com.example.delivery.mapper.OrderMapper;
+import com.example.delivery.repository.cart.CartItemRepository;
+import com.example.delivery.repository.cart.CartRepository;
 import com.example.delivery.repository.order.OrderRepository;
 import com.example.delivery.repository.store.StoreRepository;
 import com.example.delivery.repository.user.UserRepository;
@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.example.delivery.entity.OrderMenuEntity.toOrderMenu;
 
@@ -26,63 +25,57 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final StoreRepository storeRepository;
     private final UserRepository userRepository;
-    private final OrderMapper orderMapper;
+    private final CartRepository cartRepository;
+    private final CartItemRepository cartItemRepository;
 
     @Transactional
-    public ResponseOrderDto createOrder(RequestOrderDto request, Long storeId, Long userId) {
-        // store 관련된 예외 만드실까봐 임시로 아무 예외 넣어놓음, 추후 수정
-        // PathVariable로 받아온 id로 가게 조회
-        StoreEntity store = storeRepository.findById(storeId)
-                .orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
+    public GetCartResponseDto orderCart(Long userId) {
 
-        // 쿠키에서 받아온 유저 아이디로 유저 조회
+        // 존재하는 유저인지 확인
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        // 정적 메소드를 활용하여 order객체 생성
-        OrderEntity order = OrderEntity.of(user, store, OrderEntity.Status.ORDERED);
+        // 유저의 카트 불러오기
+        CartEntity cart = cartRepository.findByUser(user)
+                .orElseThrow(()-> new CustomException(ErrorCode.CART_NOT_FOUND));
 
-        // 영업시간 체크 (StoreEntity에서 직접 확인)
-        if (!store.isOperating()) {
-            throw new CustomException(ErrorCode.ORDER_NOT_FOUND); // 영업시간 아님, 임시 예외
+        // 카트에서 물건들 가져오기
+        List<CartItemEntity> cartItems = cartItemRepository.findByUser_UserId(userId);
+
+        // 가게 정보 불러오기
+        StoreEntity store = cart.getStore();
+
+        // 가게가 열었는지 확인
+        if(!store.isOperating()){
+            throw new CustomException(ErrorCode.USER_NOT_FOUND); // 임시 예외 사용
         }
 
-        // 요청받은 주문 항목들을 순회하면서,
-        // 각 메뉴 ID에 해당하는 실제 메뉴 정보를 매칭해 OrderMenuEntity로 변환한 뒤,
-        // 현재 주문(order)에 모두 추가한다.
-        List<OrderMenuEntity> orderMenus =  request.getOrderItems().stream().
-                map(menuOrder -> {
-                    MenuEntity menu = store.getMenus().stream()
-                            .filter(m -> m.getMenuId().equals(menuOrder.getMenuId()))
-                            .findFirst()
-                            .orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
-
-                    return toOrderMenu(order, menu, menuOrder.getQuantity());
-                })
+        // 카트에 담긴 물건들을 dto로 변환
+        List<GetCartResponseDto.CartItemDto> orderedItemDtos = cartItems.stream()
+                .map(GetCartResponseDto.CartItemDto::from)
                 .toList();
 
-        order.getOrderMenus().addAll(orderMenus);
-
-        // 최소 주문 금액 체크
-        int totalOrderPrice = orderMenus.stream()
-                .mapToInt(OrderMenuEntity::getTotalPrice)
+        // 총 가격 계산
+        int totalPrice = orderedItemDtos.stream()
+                .mapToInt(GetCartResponseDto.CartItemDto::getTotalPrice)
                 .sum();
 
-        if (totalOrderPrice < store.getMinOrderPrice()) {
-            throw new CustomException(ErrorCode.ORDER_NOT_FOUND); // 임시 예외 나중에 수정
+        // 주문 내역이 최소 금액 이상인지 확인
+        if(!store.isMinOrderPrice(totalPrice)){
+            throw new CustomException(ErrorCode.NOT_OVER_MINPRICE);
         }
+
+        // 주문 엔티티 생성
+        OrderEntity order = OrderEntity.of(user, store, OrderEntity.Status.ORDERED, cartItems);
 
         orderRepository.save(order);
 
-        return orderMapper.toDto(order);
+        return GetCartResponseDto.of(orderedItemDtos, totalPrice, order.getOrderId(), store);
+
     }
 
     @Transactional
-    public ResponseOrderUpdateDto updateOrder(Long storeId, Long orderId, String status, Long userId) {
-        // 가게 조회
-        StoreEntity store = storeRepository.findById(storeId)
-                .orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
-
+    public ResponseOrderUpdateDto updateOrder(Long orderId, String status, Long userId) {
         // 쿠키에서 받아온 유저 아이디로 유저 조회
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -90,6 +83,9 @@ public class OrderService {
         // 주문 조회
         OrderEntity order = orderRepository.findById(orderId)
                 .orElseThrow(()-> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+
+        // 가게 정보 가져오기
+        StoreEntity store = order.getStore();
 
         if(!store.isOwner(userId)){
             throw new CustomException(ErrorCode.ONER_NOT_MATCH);
