@@ -13,6 +13,7 @@ import com.example.delivery.repository.menu.MenuRepository;
 import com.example.delivery.repository.store.StoreRepository;
 import com.example.delivery.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -25,18 +26,13 @@ public class MenuService {
     private final StoreRepository storeRepository;
     private final UserRepository userRepository;
 
-    private static Long getCurrentUserId() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return Long.parseLong(authentication.getName());
-    }
-
     @Transactional
-    public void createMenu(CreateMenuReqDTO createMenuReqDTO) {
-        UserEntity user = userRepository.findById(getCurrentUserId())
+    public void createMenu(CreateMenuReqDTO createMenuReqDTO,Long userId) {
+        UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         StoreEntity store = storeRepository.findById(createMenuReqDTO.getStoreId())
                 .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
-
+        System.out.println(store.getUser().getUserId() + " TEST ");
         if (!store.getUser().getUserId().equals(user.getUserId())) {
             throw new CustomException(ErrorCode.FORBIDDEN);
         }
@@ -52,8 +48,8 @@ public class MenuService {
     }
 
     @Transactional
-    public UpdateMenuResDTO updateMenu(UpdateMenuReqDTO updateMenuReqDTO) {
-        UserEntity user = userRepository.findById(getCurrentUserId())
+    public UpdateMenuResDTO updateMenu(UpdateMenuReqDTO updateMenuReqDTO, Long userId) {
+        UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         StoreEntity store = storeRepository.findById(updateMenuReqDTO.getStoreId())
                 .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
@@ -79,8 +75,8 @@ public class MenuService {
     }
 
     @Transactional
-    public void deleteMenu(DeleteMenuReqDTO deleteMenuReqDTO) {
-        UserEntity user = userRepository.findById(getCurrentUserId())
+    public void deleteMenu(DeleteMenuReqDTO deleteMenuReqDTO, Long userId) {
+        UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         StoreEntity store = storeRepository.findById(deleteMenuReqDTO.getStoreId())
                 .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
@@ -96,8 +92,8 @@ public class MenuService {
         menu.delete();
     }
 
-    public void soldOut(Long menuId) {
-        Long userId = getCurrentUserId();
+    @Transactional
+    public void soldOut(Long menuId, Long userId) {
         MenuEntity menu = menuRepository.findById(menuId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
         if (!menu.getStore().getUser().getUserId().equals(userId)) {

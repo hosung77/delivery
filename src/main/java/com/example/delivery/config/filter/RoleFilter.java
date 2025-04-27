@@ -7,7 +7,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -25,11 +24,12 @@ public class RoleFilter extends OncePerRequestFilter {
         logger.info("path: " + path);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         boolean isAuthenticated = authentication != null && authentication.isAuthenticated();
-        boolean isOwner = isAuthenticated && authentication.getAuthorities()
-                .contains(new SimpleGrantedAuthority("ROLE_OWNER"));
-        boolean isUser = isAuthenticated && authentication.getAuthorities()
-                .contains(new SimpleGrantedAuthority("ROLE_USER"));
+        boolean isOwner = isAuthenticated && authentication.getAuthorities().stream()
+                .anyMatch(auth -> "ROLE_OWNER".equals(auth.getAuthority()));
+        boolean isUser = isAuthenticated && authentication.getAuthorities().stream()
+                .anyMatch(auth -> "ROLE_USER".equals(auth.getAuthority()));
 
+        logger.info("현재 권한 : " + isOwner);
         Map<String, Set<String>> ownerPaths = new HashMap<>();
         // static persist -> repo, entity
         ownerPaths.put("/api/stores", new HashSet<>(Arrays.asList("GET", "POST", "PUT","PATCH", "DELETE")));
@@ -46,9 +46,9 @@ public class RoleFilter extends OncePerRequestFilter {
                 if (!isOwner) {
                     throw new CustomException(ErrorCode.FORBIDDEN);
                 }
-                filterChain.doFilter(request,response);
-                return;
             }
+            filterChain.doFilter(request, response);
+            return;
         }
 
         if (userPaths.containsKey(path)) {
@@ -57,11 +57,11 @@ public class RoleFilter extends OncePerRequestFilter {
                 if (!isUser) {
                     throw new CustomException(ErrorCode.FORBIDDEN);
                 }
-                filterChain.doFilter(request,response);
-                return;
             }
+            // user 권한 통과했으면 여기서 끝
+            filterChain.doFilter(request, response);
+            return;
         }
-
 
         filterChain.doFilter(request,response);
     }
