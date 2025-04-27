@@ -8,6 +8,9 @@ import com.example.delivery.repository.auth.RefreshTokenRepository;
 import com.example.delivery.repository.user.UserRepository;
 import com.example.delivery.service.auth.model.Token;
 import com.example.delivery.service.auth.model.TokenClaim;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -42,5 +45,18 @@ public class AuthService {
 		refreshTokenRepository.save(RefreshTokenEntity.of(token));
 
 		return token;
+	}
+	public void deleteToken(HttpServletResponse response){
+		Cookie accessTokenCookie = new Cookie("accessToken", null);
+		accessTokenCookie.setMaxAge(0);
+		accessTokenCookie.setPath("/");
+		accessTokenCookie.setHttpOnly(true);
+		response.addCookie(accessTokenCookie);
+
+		Cookie refreshTokenCookie = new Cookie("refreshToken", null);
+		refreshTokenCookie.setMaxAge(0);
+		refreshTokenCookie.setPath("/");
+		refreshTokenCookie.setHttpOnly(true);
+		response.addCookie(refreshTokenCookie);
 	}
 }

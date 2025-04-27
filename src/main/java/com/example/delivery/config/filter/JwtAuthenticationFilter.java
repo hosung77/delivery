@@ -125,9 +125,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			.toList();
 		log.info("TokenClaim 정보: {}", tokenClaim); // tokenClaim의 내용 출력
 		log.info("생성된 권한 목록: {}", authorities); // authorities 내용 출력
-
+		String subject = String.valueOf(tokenClaim.getSubject());
 		Authentication authentication = new UsernamePasswordAuthenticationToken(
-			tokenClaim.getSubject(), null, authorities
+				subject, null, authorities
 		);
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
