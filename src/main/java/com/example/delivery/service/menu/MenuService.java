@@ -26,11 +26,6 @@ public class MenuService {
     private final StoreRepository storeRepository;
     private final UserRepository userRepository;
 
-    private static Long getCurrentUserId() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return Long.parseLong(authentication.getName());
-    }
-
     @Transactional
     public void createMenu(CreateMenuReqDTO createMenuReqDTO,Long userId) {
         UserEntity user = userRepository.findById(userId)
