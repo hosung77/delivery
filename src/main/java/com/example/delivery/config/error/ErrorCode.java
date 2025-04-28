@@ -25,15 +25,17 @@ public enum ErrorCode {
     // 주문
     // 스토어
     STORE_NOT_FOUND("존재하지 않는 가게입니다.",HttpStatus.NOT_FOUND),
+    STORE_NOT_AVALIABLE("현재 영업중이 아닙니다",HttpStatus.BAD_REQUEST),
     // 오더
     ORDER_NOT_FOUND("해당하는 주문을 찾을 수 없습니다.",HttpStatus.NOT_FOUND),
-    ONER_NOT_MATCH("가게 사장님만이 주문을 관리할 수 있습니다.",HttpStatus.BAD_REQUEST),
+    OWNER_NOT_MATCH("가게 사장님만이 주문을 관리할 수 있습니다.",HttpStatus.BAD_REQUEST),
 
     STORE_LIMIT_EXCEEDED("최대 3개의 가게만 등록 가능합니다.", HttpStatus.BAD_REQUEST),
     STORE_OWNER_MISMATCH("이 가게의 소유자가 아닙니다.", HttpStatus.FORBIDDEN),
     CART_NOT_FOUND("장바구니가 비어져 있습니다.", HttpStatus.NOT_FOUND),
     DIFFERENT_STORE_ITEM("같은 가게의 메뉴만 담을 수 있습니다.", HttpStatus.BAD_REQUEST),
     NOT_OVER_MINPRICE("최소 주문 금액 이상 주문을 해주셔야 합니다.", HttpStatus.BAD_REQUEST),
+    KEYWORD_REQUIRED("검색어(keyword)를 입력해야 합니다.", HttpStatus.BAD_REQUEST),
 
     NOT_MATCH_MENU("일치하는 메뉴가 없습니다.", HttpStatus.NOT_FOUND),
     // 메뉴

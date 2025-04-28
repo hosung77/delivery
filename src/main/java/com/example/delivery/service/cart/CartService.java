@@ -4,14 +4,11 @@ import com.example.delivery.config.error.CustomException;
 import com.example.delivery.config.error.ErrorCode;
 import com.example.delivery.dto.cart.response.CartResponseDto;
 import com.example.delivery.dto.cart.response.GetCartResponseDto;
-import com.example.delivery.dto.cart.response.OrderedMenuResponseDto;
 import com.example.delivery.entity.*;
 import com.example.delivery.repository.cart.CartItemRepository;
 import com.example.delivery.repository.cart.CartRepository;
 import com.example.delivery.repository.menu.MenuRepository;
-import com.example.delivery.repository.store.StoreRepository;
 import com.example.delivery.repository.user.UserRepository;
-import jakarta.persistence.criteria.Order;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +37,9 @@ public class CartService {
         CartEntity cart = cartRepository.findByUser(user)
                 .orElseThrow(()-> new CustomException(ErrorCode.CART_NOT_FOUND));
 
+        // store가 null일 경우 기본값을 가진 StoreEntity 반환
+        StoreEntity store = cart.getStore() != null ? cart.getStore() : StoreEntity.of();
+
         // 카트에 있는 메뉴들을 조회 및 dto로 변환하여 list 형태로 반환
         List<GetCartResponseDto.CartItemDto> itemDtos = cart.getCartItems().stream()
                 .map(GetCartResponseDto.CartItemDto::from)
@@ -50,7 +50,7 @@ public class CartService {
                 .mapToInt(GetCartResponseDto.CartItemDto::getTotalPrice)
                 .sum();
 
-        return GetCartResponseDto.of(itemDtos, totalPrice, cart.getCartId(), cart.getStore());
+        return GetCartResponseDto.of(itemDtos, totalPrice, cart.getCartId(), store);
 
     }
 
@@ -59,15 +59,19 @@ public class CartService {
 
         // 유저가 존재하는지 확인
         UserEntity user = userRepository.findById(userId)
-                .orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        // 메뉴 확인, 임시 예외 사용
+        // 메뉴 확인
         MenuEntity menu = menuRepository.findById(menuId)
-                .orElseThrow(()-> new CustomException(ErrorCode.MENU_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
 
         // 카트가 없다면 카트를 생성
         CartEntity cart = cartRepository.findByUser(user)
-                .orElseGet(()-> cartRepository.save(CartEntity.of(user,menu.getStore())));
+                .orElseGet(() -> {
+                    // 카트를 새로 만들 때, store 정보를 함께 설정
+                    CartEntity newCart = CartEntity.of(user, menu.getStore());
+                    return cartRepository.save(newCart);
+                });
 
         // 장바구니에 이미 메뉴가 있다면 store 체크
         if (!cart.getCartItems().isEmpty()) {
@@ -75,20 +79,27 @@ public class CartService {
             StoreEntity newMenuStore = menu.getStore();
 
             if (!currentStore.isSameStore(newMenuStore)) {
-                throw new CustomException(ErrorCode.DIFFERENT_STORE_ITEM);
+                // 다른 가게면 장바구니 비우기
+                cart.clearCart(); // cart에서 cartItems 다 지워주는 메소드 필요
+                cart.addStore(menu.getStore()); // 새로 추가되는 아이템의 store 정보를 설정
             }
+        } else {
+            // 카트가 비어있을 때, store 정보 설정
+            cart.addStore(menu.getStore()); // 첫 아이템이 추가될 때 store 정보 설정
         }
 
+        // 이미 장바구니에 아이템이 있는지 확인
         CartItemEntity existingItem = cart.getCartItems().stream()
                 .filter(item -> item.getMenu().getMenuId().equals(menuId))
                 .findFirst()
                 .orElse(null);
 
-        if(existingItem != null){
+        if (existingItem != null) {
             existingItem.addQuantity();
             cartItemRepository.save(existingItem);
-        }else{
-            CartItemEntity newItem = CartItemEntity.of(cart,menu,1,user);
+        } else {
+            // 새 아이템을 추가할 때, store 정보도 함께 설정
+            CartItemEntity newItem = CartItemEntity.of(cart, menu, 1, user);
             cartItemRepository.save(newItem);
         }
 
@@ -108,7 +119,7 @@ public class CartService {
 
         // 메뉴가 존재하는지 확인, 임시 예외
         MenuEntity menu = menuRepository.findById(menuId)
-                .orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(()-> new CustomException(ErrorCode.MENU_NOT_FOUND));
 
         CartItemEntity presentCart = cart.getCartItems().stream()
                 .filter(item -> item.getMenu().getMenuId().equals(menuId))
@@ -138,7 +149,10 @@ public class CartService {
                 .orElseThrow(()-> new CustomException(ErrorCode.CART_NOT_FOUND));
 
         // Cart를 유지한채 카트의 목록을 초기화
-        cartItemRepository.deleteAllByCart(cart);
+        cart.clearCart(); // 아이템 초기화
+        cartItemRepository.deleteAllByCart(cart); // DB에서 아이템 삭제
+        cart.clearStore(); // 스토어 초기화
+        cartRepository.save(cart); // 카트 저장
 
         return CartResponseDto.cartCleared();
 

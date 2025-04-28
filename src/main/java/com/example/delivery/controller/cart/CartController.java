@@ -7,6 +7,7 @@ import com.example.delivery.service.cart.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,10 +19,8 @@ public class CartController {
     private final CartService cartService;
 
     @GetMapping
-    ResponseEntity<GetCartResponseDto> viewCart() {
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Long userId = (Long) authentication.getPrincipal(); // getPrincipal()이 Long 타입이라면, 이를 Long으로 캐스팅
+    ResponseEntity<GetCartResponseDto> viewCart(@AuthenticationPrincipal String userIdStr) {
+        Long userId = Long.parseLong(userIdStr);
 
         GetCartResponseDto dto = cartService.viewCart(userId);
 
@@ -29,9 +28,9 @@ public class CartController {
     }
 
     @PostMapping("/{menuId}")
-    ResponseEntity<CartResponseDto> addCartItem(@PathVariable Long menuId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Long userId = (Long) authentication.getPrincipal(); // getPrincipal()이 Long 타입이라면, 이를 Long으로 캐스팅
+    ResponseEntity<CartResponseDto> addCartItem(@PathVariable Long menuId,
+                                                @AuthenticationPrincipal String userIdStr) {
+        Long userId = Long.parseLong(userIdStr);
 
         CartResponseDto dto = cartService.addCartItem(menuId, userId);
 
@@ -39,9 +38,9 @@ public class CartController {
     }
 
     @PatchMapping("/{menuId}")
-    ResponseEntity<CartResponseDto> decreaseCartItem(@PathVariable Long menuId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Long userId = (Long) authentication.getPrincipal(); // getPrincipal()이 Long 타입이라면, 이를 Long으로 캐스팅
+    ResponseEntity<CartResponseDto> decreaseCartItem(@PathVariable Long menuId,
+                                                     @AuthenticationPrincipal String userIdStr) {
+        Long userId = Long.parseLong(userIdStr);
 
         CartResponseDto dto = cartService.decreaseCartItem(menuId, userId);
 
@@ -49,9 +48,8 @@ public class CartController {
     }
 
     @DeleteMapping
-    ResponseEntity<CartResponseDto> deleteCartItem() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Long userId = (Long) authentication.getPrincipal(); // getPrincipal()이 Long 타입이라면, 이를 Long으로 캐스팅
+    ResponseEntity<CartResponseDto> deleteCartItem(@AuthenticationPrincipal String userIdStr) {
+        Long userId = Long.parseLong(userIdStr);
 
         CartResponseDto dto = cartService.deleteCartItem(userId);
 

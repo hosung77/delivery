@@ -8,7 +8,10 @@ import com.example.delivery.entity.StoreEntity;
 import com.example.delivery.entity.UserEntity;
 import com.example.delivery.repository.store.StoreRepository;
 import com.example.delivery.repository.user.UserRepository;
+import com.example.delivery.service.auth.SecurityUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
@@ -23,19 +26,25 @@ public class StoreService {
    private final UserRepository userRepository;
 
    // 가게 생성
-   public StoreResponseDto createStore(StoreRequestDto dto, Long userId) {
+   public StoreResponseDto createStore(StoreRequestDto dto) {
+      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+      Long userId = (Long) authentication.getPrincipal();
+
       UserEntity user = userRepository.findById(userId)
               .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
+      // 사장님 권한 확인
       if (!user.getRoles().equals(UserEntity.Role.OWNER)) {
          throw new CustomException(ErrorCode.FORBIDDEN);
       }
 
+      // 최대 3개의 가게 제한
       List<StoreEntity> stores = storeRepository.findByUser(user);
       if (stores.size() >= 3) {
          throw new CustomException(ErrorCode.STORE_LIMIT_EXCEEDED);
       }
 
+      // StoreEntity 생성 및 저장
       StoreEntity store = StoreEntity.builder()
               .name(dto.getName())
               .open(LocalTime.parse(dto.getOpen()))
@@ -116,7 +125,6 @@ public class StoreService {
    public StoreResponseDto updateStore(Long storeId, StoreRequestDto dto, Long userId) {
       UserEntity user = userRepository.findById(userId)
               .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
       StoreEntity store = storeRepository.findById(storeId)
               .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
@@ -124,7 +132,6 @@ public class StoreService {
          throw new CustomException(ErrorCode.STORE_OWNER_MISMATCH);
       }
 
-      // 주체가 서비스가 되게 수정
       dto.updateEntity(store);
       StoreEntity updatedStore = storeRepository.save(store);
 
@@ -143,7 +150,6 @@ public class StoreService {
    public StoreResponseDto closeStore(Long storeId, Long userId) {
       UserEntity user = userRepository.findById(userId)
               .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
       StoreEntity store = storeRepository.findById(storeId)
               .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
