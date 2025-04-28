@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/reviews") // 보통 api 경로에 /api 붙이는 걸 추천!
+@RequestMapping("/api/reviews")
 @RequiredArgsConstructor
 public class ReviewController {
 
@@ -30,7 +30,7 @@ public class ReviewController {
         return ResponseEntity.ok().build();
     }
 
-    // 리뷰 조회 (가게별)
+    // 리뷰 조회 (가게별 + 별점 범위로 필터링)
     @GetMapping("/{storeId}")
     public ResponseEntity<List<ReviewResponseDTO>> getReviews(
             @PathVariable Long storeId,

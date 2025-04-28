@@ -33,4 +33,9 @@ public class StoreResponseDto {
         this.menus = menus;
     }
 
+    public StoreResponseDto(Long id, String name, String status) {
+        this.id = id;
+        this.name = name;
+        this.status = status;
+    }
 }

@@ -30,7 +30,9 @@ public class AdminLogAspect {
 
         // 유저 정보 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Long userId = (Long) authentication.getPrincipal(); // getPrincipal()이 Long 타입이라면, 이를 Long으로 캐스팅
+        String principal = (String) authentication.getPrincipal(); // getPrincipal()이 String 타입이므로, 이를 String으로 가져옵니다.
+        Long userId = Long.parseLong(principal); // String을 Long으로 변환
+
 
         // 요청한 URL 가져오기
         String requestUrl = request.getRequestURI();

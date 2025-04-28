@@ -7,7 +7,7 @@ public class CartResponseDto {
     private String message;
 
     // 메시지만 담는 생성자
-    private CartResponseDto(String message) {
+    public CartResponseDto(String message) {
         this.message = message;
     }
 

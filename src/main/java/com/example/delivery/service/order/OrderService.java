@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.example.delivery.entity.OrderMenuEntity.toOrderMenu;
 
 @Service
 @RequiredArgsConstructor
@@ -55,7 +54,7 @@ public class OrderService {
 
         // 가게가 열었는지 확인
         if(!store.isOperating()){
-            throw new CustomException(ErrorCode.STORE_NOT_FOUND); // 임시 예외 사용
+            throw new CustomException(ErrorCode.STORE_NOT_AVALIABLE);
         }
 
         // 카트에 담긴 물건들을 dto로 변환
@@ -96,7 +95,7 @@ public class OrderService {
         StoreEntity store = order.getStore();
 
         if(!store.isOwner(userId)){
-            throw new CustomException(ErrorCode.ONER_NOT_MATCH);
+            throw new CustomException(ErrorCode.OWNER_NOT_MATCH);
         }
 
         // status 값을 Status enum으로 변환
