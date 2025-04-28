@@ -1,3 +1,5 @@
+package com.example.delivery.controller.store;
+
 import com.example.delivery.dto.store.StoreRequestDto;
 import com.example.delivery.dto.store.StoreResponseDto;
 import com.example.delivery.service.store.StoreService;
@@ -17,14 +19,16 @@ public class StoreController {
 
     // 가게 생성
     @PostMapping
-    public ResponseEntity<StoreResponseDto> createStore(@RequestBody StoreRequestDto dto, @AuthenticationPrincipal Long userId) {
+    public ResponseEntity<StoreResponseDto> createStore(@RequestBody StoreRequestDto dto, @AuthenticationPrincipal String userIdStr) {
+        Long userId = Long.parseLong(userIdStr);
         StoreResponseDto storeResponse = storeService.createStore(dto, userId);
         return ResponseEntity.ok(storeResponse);
     }
 
     // 유저의 가게 목록 조회
     @GetMapping("/user")
-    public ResponseEntity<List<StoreResponseDto>> getStoresByUser(@AuthenticationPrincipal Long userId) {
+    public ResponseEntity<List<StoreResponseDto>> getStoresByUser(@AuthenticationPrincipal String userIdStr) {
+        Long userId = Long.parseLong(userIdStr);
         List<StoreResponseDto> stores = storeService.getStoresByUser(userId);
         return ResponseEntity.ok(stores);
     }
