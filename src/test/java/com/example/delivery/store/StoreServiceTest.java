@@ -133,9 +133,9 @@ class StoreServiceTest {
         StoreRequestDto storeRequestDto = new StoreRequestDto("테스트 가게", "09:00", "22:00", 10000);
 
         // when & then: 일반 사용자가 가게를 생성하려고 하면 예외가 발생해야 함
-        assertThatThrownBy(() -> storeService.createStore(storeRequestDto, nonOwner.getUserId()))  // userId를 전달
-                .isInstanceOf(CustomException.class)
-                .hasMessage(ErrorCode.STORE_OWNER_MISMATCH.getMessage());
+        assertThatThrownBy(() -> storeService.createStore(storeRequestDto, nonOwner.getUserId()))  // userId 전달
+                .isInstanceOf(CustomException.class)  // 예외의 타입이 CustomException이어야 함
+                .hasMessage(ErrorCode.STORE_OWNER_MISMATCH.getMessage());  // 예외 메시지가 맞는지 확인
     }
 
     @Test
@@ -145,7 +145,7 @@ class StoreServiceTest {
         StoreRequestDto storeRequestDto = new StoreRequestDto("테스트 가게", "09:00", "22:00", 10000);
 
         // when: 사장님이 가게를 생성
-        StoreResponseDto createdStore = storeService.createStore(storeRequestDto, owner.getUserId());  // userId를 전달
+        StoreResponseDto createdStore = storeService.createStore(storeRequestDto, owner.getUserId());  // userId 전달
 
         // then: 생성된 가게의 이름이 "테스트 가게"여야 함
         assertThat(createdStore.getName()).isEqualTo("테스트 가게");

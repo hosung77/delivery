@@ -8,10 +8,7 @@ import com.example.delivery.entity.StoreEntity;
 import com.example.delivery.entity.UserEntity;
 import com.example.delivery.repository.store.StoreRepository;
 import com.example.delivery.repository.user.UserRepository;
-import com.example.delivery.service.auth.SecurityUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
@@ -26,10 +23,8 @@ public class StoreService {
    private final UserRepository userRepository;
 
    // 가게 생성
-   public StoreResponseDto createStore(StoreRequestDto dto) {
-      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-      Long userId = (Long) authentication.getPrincipal();
-
+   public StoreResponseDto createStore(StoreRequestDto dto, Long userId) {
+      // userId로 유저 조회
       UserEntity user = userRepository.findById(userId)
               .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
@@ -128,11 +123,12 @@ public class StoreService {
       StoreEntity store = storeRepository.findById(storeId)
               .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
+      // 가게의 소유자가 아닌 경우 예외 처리
       if (!store.getUser().equals(user)) {
          throw new CustomException(ErrorCode.STORE_OWNER_MISMATCH);
       }
 
-      dto.updateEntity(store);
+      dto.updateEntity(store); // StoreRequestDto에서 전달받은 데이터를 Entity에 반영
       StoreEntity updatedStore = storeRepository.save(store);
 
       return new StoreResponseDto(
@@ -153,11 +149,12 @@ public class StoreService {
       StoreEntity store = storeRepository.findById(storeId)
               .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
+      // 가게의 소유자가 아닌 경우 예외 처리
       if (!store.getUser().equals(user)) {
          throw new CustomException(ErrorCode.STORE_OWNER_MISMATCH);
       }
 
-      store.setStatus(StoreEntity.Status.CLOSE);
+      store.setStatus(StoreEntity.Status.CLOSE);  // 가게 상태를 폐업으로 변경
       storeRepository.save(store);
 
       return new StoreResponseDto(

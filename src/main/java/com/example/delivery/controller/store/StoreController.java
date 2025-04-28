@@ -1,5 +1,3 @@
-package com.example.delivery.controller.store;
-
 import com.example.delivery.dto.store.StoreRequestDto;
 import com.example.delivery.dto.store.StoreResponseDto;
 import com.example.delivery.service.store.StoreService;
@@ -19,16 +17,14 @@ public class StoreController {
 
     // 가게 생성
     @PostMapping
-    public ResponseEntity<StoreResponseDto> createStore(@RequestBody StoreRequestDto dto, @AuthenticationPrincipal String userIdStr) {
-        Long userId = Long.parseLong(userIdStr);
+    public ResponseEntity<StoreResponseDto> createStore(@RequestBody StoreRequestDto dto, @AuthenticationPrincipal Long userId) {
         StoreResponseDto storeResponse = storeService.createStore(dto, userId);
         return ResponseEntity.ok(storeResponse);
     }
 
     // 유저의 가게 목록 조회
     @GetMapping("/user")
-    public ResponseEntity<List<StoreResponseDto>> getStoresByUser(@AuthenticationPrincipal String userIdStr) {
-        Long userId = Long.parseLong(userIdStr);
+    public ResponseEntity<List<StoreResponseDto>> getStoresByUser(@AuthenticationPrincipal Long userId) {
         List<StoreResponseDto> stores = storeService.getStoresByUser(userId);
         return ResponseEntity.ok(stores);
     }
@@ -49,16 +45,14 @@ public class StoreController {
 
     // 가게 수정
     @PutMapping("/{storeId}")
-    public ResponseEntity<StoreResponseDto> updateStore(@PathVariable Long storeId, @RequestBody StoreRequestDto dto, @AuthenticationPrincipal String userIdStr) {
-        Long userId = Long.parseLong(userIdStr);
+    public ResponseEntity<StoreResponseDto> updateStore(@PathVariable Long storeId, @RequestBody StoreRequestDto dto, @AuthenticationPrincipal Long userId) {
         StoreResponseDto updatedStore = storeService.updateStore(storeId, dto, userId);
         return ResponseEntity.ok(updatedStore);
     }
 
     // 가게 폐업
     @PutMapping("/{storeId}/close")
-    public ResponseEntity<StoreResponseDto> closeStore(@PathVariable Long storeId, @AuthenticationPrincipal String userIdStr) {
-        Long userId = Long.parseLong(userIdStr);
+    public ResponseEntity<StoreResponseDto> closeStore(@PathVariable Long storeId, @AuthenticationPrincipal Long userId) {
         StoreResponseDto dto = storeService.closeStore(storeId, userId);
         return ResponseEntity.ok(dto);
     }
