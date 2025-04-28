@@ -83,7 +83,6 @@ public class StoreService {
       }
 
       // DTO를 이용한 가게 정보 업데이트
-      dto.updateEntity(store);
 
       // 저장 후 응답 DTO 반환
       StoreEntity updatedStore = storeRepository.save(store);
