@@ -56,7 +56,8 @@ public class StoreController {
 
     // 가게 폐업
     @PutMapping("/{storeId}/close")
-    public ResponseEntity<String> closeStore(@PathVariable Long storeId, @RequestAttribute UserEntity user) {
-        return storeService.closeStore(storeId, user.getEmail());
+    public ResponseEntity<StoreResponseDto> closeStore(@PathVariable Long storeId, @RequestAttribute UserEntity user) {
+        StoreResponseDto dto = storeService.closeStore(storeId, user.getEmail());
+        return ResponseEntity.ok(dto);
     }
 }

@@ -160,7 +160,7 @@ public class StoreService {
    }
 
    // 가게 폐업 서비스
-   public ResponseEntity<String> closeStore(Long storeId, String email) {
+   public StoreResponseDto  closeStore(Long storeId, String email) {
       // 1. 유저 정보 조회 (사장님 권한 확인)
       UserEntity user = userRepository.findByEmail(email)
               .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -178,6 +178,6 @@ public class StoreService {
       store.setStatus(StoreEntity.Status.CLOSE);
       storeRepository.save(store);
 
-      return  new ResponseEntity<>("가게가 폐업되었습니다.", HttpStatus.OK);
+      return new StoreResponseDto(store.getStoreId(), store.getName(), store.getStatus().name());
    }
 }
