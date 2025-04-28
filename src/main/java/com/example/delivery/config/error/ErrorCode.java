@@ -34,6 +34,7 @@ public enum ErrorCode {
     CART_NOT_FOUND("장바구니가 비어져 있습니다.", HttpStatus.NOT_FOUND),
     DIFFERENT_STORE_ITEM("같은 가게의 메뉴만 담을 수 있습니다.", HttpStatus.BAD_REQUEST),
     NOT_OVER_MINPRICE("최소 주문 금액 이상 주문을 해주셔야 합니다.", HttpStatus.BAD_REQUEST),
+    KEYWORD_REQUIRED("검색어(keyword)를 입력해야 합니다.", HttpStatus.BAD_REQUEST),
 
     NOT_MATCH_MENU("일치하는 메뉴가 없습니다.", HttpStatus.NOT_FOUND),
     // 메뉴
