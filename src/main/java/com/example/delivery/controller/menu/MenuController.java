@@ -23,7 +23,7 @@ import java.security.Principal;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/menus")
+@RequestMapping("/api/stores/menus")
 public class MenuController {
     private static final Logger log = LoggerFactory.getLogger(MenuController.class);
     private final MenuService menuService;

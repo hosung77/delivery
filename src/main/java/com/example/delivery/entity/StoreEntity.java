@@ -17,6 +17,19 @@ import java.util.List;
 @Getter
 public class StoreEntity extends BaseTimeEntity {
 
+    public void setName(String name) {
+    }
+
+    public void setOpen(LocalTime parse) {
+    }
+
+    public void setClose(LocalTime parse) {
+
+    }
+
+    public void setMinOrderPrice(int minOrderPrice) {
+    }
+
     public enum Status {
         OPEN, CLOSE
     }
@@ -25,7 +38,7 @@ public class StoreEntity extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long storeId;
 
-    @Column(nullable = false, length = 10, unique = true)
+    @Column(nullable = false, length = 100, unique = true)
     private String name;
 
     @Column(nullable = false)

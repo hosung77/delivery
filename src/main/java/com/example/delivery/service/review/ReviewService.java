@@ -42,7 +42,7 @@ public class ReviewService {
 
     // 리뷰 조회 (가게별 + 별점 범위)
     public List<ReviewResponseDTO> getReviews(Long storeId, int minRating, int maxRating) {
-        return reviewRepository.findByStore_StoreIdAndRatingBetweenAndIsDeletedFalseOrderByCreatedAtDesc(storeId, minRating, maxRating)
+        return reviewRepository.findByStore_StoreIdAndRatingBetweenAndDeletedFalseOrderByCreatedAtDesc(storeId, minRating, maxRating)
                 .stream()
                 .map(r -> new ReviewResponseDTO(
                         r.getReviewId(),

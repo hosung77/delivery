@@ -3,7 +3,6 @@ package com.example.delivery.config;
 import com.example.delivery.config.error.ErrorCode;
 import com.example.delivery.config.error.ErrorResponseDTO;
 import com.example.delivery.config.filter.JwtAuthenticationFilter;
-import com.example.delivery.config.filter.RoleFilter;
 import com.example.delivery.repository.auth.RefreshTokenRepository;
 import com.example.delivery.service.auth.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -75,10 +74,11 @@ public class SecurityConfig {
         http.authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/auth/token").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/users/*").hasAuthority("ROLE_ADMIN")
-                .requestMatchers(HttpMethod.POST, "/api/stores/*").hasAuthority("ROLE_ADMIN")
-                .requestMatchers(HttpMethod.POST, "/api/orders/*").hasAuthority("ROLE_ADMIN")
-
+                .requestMatchers(HttpMethod.GET, "/api/stores", "/api/stores/menus", "/api/reviews").hasAnyRole("OWNER", "USER")
+                .requestMatchers(HttpMethod.POST, "/api/stores", "/api/stores/menus").hasRole("OWNER")
+                .requestMatchers(HttpMethod.PUT, "/api/stores", "/api/stores/menus").hasRole("OWNER")
+                .requestMatchers(HttpMethod.DELETE, "/api/stores", "/api/stores/menus").hasRole("OWNER")
+                .requestMatchers("/api/stores/order/**").hasAnyRole("USER","OWNER")
                 .anyRequest().authenticated());
 
         // 예외처리는 하단 부에 적용
