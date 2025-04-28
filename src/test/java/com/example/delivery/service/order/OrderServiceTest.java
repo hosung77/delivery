@@ -153,7 +153,7 @@ class OrderServiceTest {
         // when & then
         assertThatThrownBy(() -> orderService.updateOrder(order.getOrderId(), "ACCEPTED", 2L))
                 .isInstanceOf(CustomException.class)
-                .hasMessageContaining(ErrorCode.ONER_NOT_MATCH.getMessage());
+                .hasMessageContaining(ErrorCode.OWNER_NOT_MATCH.getMessage());
     }
 
     @Test
