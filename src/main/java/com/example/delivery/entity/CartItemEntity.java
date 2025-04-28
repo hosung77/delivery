@@ -1,14 +1,13 @@
 package com.example.delivery.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.hibernate.annotations.SQLRestriction;
+import lombok.*;
 
 @Entity
 @Table(name = "tb_cart_item")
 @Getter
+@AllArgsConstructor
+@Builder
 @NoArgsConstructor
 @ToString(exclude = {"cart", "user"})
 public class CartItemEntity {

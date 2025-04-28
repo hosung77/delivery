@@ -51,6 +51,10 @@ public class StoreEntity extends BaseTimeEntity {
     @Builder.Default
     private List<MenuEntity> menus = new ArrayList<>();
 
+    public static StoreEntity of(){
+        return new StoreEntity();
+    }
+
     public StoreEntity(String name, LocalTime open, LocalTime close, int minOrderPrice,
                        Status status, boolean closed, UserEntity user, List<MenuEntity> menus) {
         this.name = name;
@@ -77,14 +81,7 @@ public class StoreEntity extends BaseTimeEntity {
 
     // 폐업인지 아닌지 영업중인지 아닌지에 관한 메서드
     public boolean isOperating() {
-        // isAvailable로 가게가 폐업 상태인지를 체크
-        if (!isAvailable()) {
-            return false;
-        }
-
-        // 현재 시간 체크 (영업시간 체크)
-        LocalTime now = LocalTime.now();
-        return !now.isBefore(open) && !now.isAfter(close);
+        return this.status == Status.OPEN;
     }
 
     public boolean isSameStore(StoreEntity storeEntity) {
@@ -96,4 +93,7 @@ public class StoreEntity extends BaseTimeEntity {
         return price >= minOrderPrice;
     }
 
+    public void updateMinOrderPrice(int newMinOrderPrice) {
+        this.minOrderPrice = newMinOrderPrice;
+    }
 }
