@@ -10,7 +10,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/order")
+@RequestMapping("/api/stores/order")
 @RequiredArgsConstructor
 public class OrderController {
 
@@ -20,9 +20,7 @@ public class OrderController {
     @AdminOnlyLog
     public ResponseEntity<GetCartResponseDto> orderCart(@AuthenticationPrincipal String userIdStr) {
         Long userId = Long.parseLong(userIdStr);
-
         GetCartResponseDto orderedMenu = orderService.orderCart(userId);
-
         return ResponseEntity.ok().body(orderedMenu);
     }
 
@@ -32,9 +30,7 @@ public class OrderController {
                                                               @RequestParam(required = true) String status,
                                                               @AuthenticationPrincipal String userIdStr) {
         Long userId = Long.parseLong(userIdStr);
-
         ResponseOrderUpdateDto dto = orderService.updateOrder(orderId, status, userId);
-
         return ResponseEntity.ok().body(dto);
     }
 }
