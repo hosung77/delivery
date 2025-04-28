@@ -18,7 +18,7 @@ public class ReviewEntity extends BaseTimeEntity {
     @Column(nullable = false)
     private int rating;
 
-    private boolean isDeleted;
+    private boolean deleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -38,12 +38,12 @@ public class ReviewEntity extends BaseTimeEntity {
         this.store = store;
         this.user = user;
         this.order = order;
-        this.isDeleted = false;
+        this.deleted = false;
     }
 
     //삭제 메서드
     public void delete() {
-        this.isDeleted = true;
+        this.deleted = true;
     }
 
     //수정 메서드
