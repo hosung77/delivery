@@ -85,7 +85,7 @@ public class StoreService {
 
    // 전체 가게 목록 조회
    public List<StoreResponseDto> getAllStores() {
-      List<StoreEntity> stores = storeRepository.findAll();
+      List<StoreEntity> stores = storeRepository.findByClosedFalse();
 
       return stores.stream()
               .map(store -> new StoreResponseDto(

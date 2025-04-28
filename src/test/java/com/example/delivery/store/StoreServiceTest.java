@@ -135,7 +135,7 @@ class StoreServiceTest {
         // when & then: 일반 사용자가 가게를 생성하려고 하면 예외가 발생해야 함
         assertThatThrownBy(() -> storeService.createStore(storeRequestDto, nonOwner.getUserId()))  // userId 전달
                 .isInstanceOf(CustomException.class)  // 예외의 타입이 CustomException이어야 함
-                .hasMessage(ErrorCode.STORE_OWNER_MISMATCH.getMessage());  // 예외 메시지가 맞는지 확인
+                .hasMessage(ErrorCode.FORBIDDEN.getMessage());  // 예외 메시지가 맞는지 확인
     }
 
     @Test
