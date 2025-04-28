@@ -5,8 +5,7 @@ import com.example.delivery.dto.store.StoreResponseDto;
 import com.example.delivery.service.store.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,23 +17,18 @@ public class StoreController {
 
     private final StoreService storeService;
 
-    // 인증된 userId 가져오는 메서드
-    private Long getCurrentUserId() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return (Long) authentication.getPrincipal();
-    }
-
     // 가게 생성
     @PostMapping
-    public ResponseEntity<StoreResponseDto> createStore(@RequestBody StoreRequestDto dto) {
-        StoreResponseDto storeResponse = storeService.createStore(dto);
+    public ResponseEntity<StoreResponseDto> createStore(@RequestBody StoreRequestDto dto, @AuthenticationPrincipal String userIdStr) {
+        Long userId = Long.parseLong(userIdStr);
+        StoreResponseDto storeResponse = storeService.createStore(dto, userId);
         return ResponseEntity.ok(storeResponse);
     }
 
     // 유저의 가게 목록 조회
     @GetMapping("/user")
-    public ResponseEntity<List<StoreResponseDto>> getStoresByUser() {
-        Long userId = getCurrentUserId();
+    public ResponseEntity<List<StoreResponseDto>> getStoresByUser(@AuthenticationPrincipal String userIdStr) {
+        Long userId = Long.parseLong(userIdStr);
         List<StoreResponseDto> stores = storeService.getStoresByUser(userId);
         return ResponseEntity.ok(stores);
     }
@@ -55,16 +49,16 @@ public class StoreController {
 
     // 가게 수정
     @PutMapping("/{storeId}")
-    public ResponseEntity<StoreResponseDto> updateStore(@PathVariable Long storeId, @RequestBody StoreRequestDto dto) {
-        Long userId = getCurrentUserId();
+    public ResponseEntity<StoreResponseDto> updateStore(@PathVariable Long storeId, @RequestBody StoreRequestDto dto, @AuthenticationPrincipal String userIdStr) {
+        Long userId = Long.parseLong(userIdStr);
         StoreResponseDto updatedStore = storeService.updateStore(storeId, dto, userId);
         return ResponseEntity.ok(updatedStore);
     }
 
     // 가게 폐업
     @PutMapping("/{storeId}/close")
-    public ResponseEntity<StoreResponseDto> closeStore(@PathVariable Long storeId) {
-        Long userId = getCurrentUserId();
+    public ResponseEntity<StoreResponseDto> closeStore(@PathVariable Long storeId, @AuthenticationPrincipal String userIdStr) {
+        Long userId = Long.parseLong(userIdStr);
         StoreResponseDto dto = storeService.closeStore(storeId, userId);
         return ResponseEntity.ok(dto);
     }

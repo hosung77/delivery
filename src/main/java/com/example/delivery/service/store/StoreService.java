@@ -9,8 +9,6 @@ import com.example.delivery.entity.UserEntity;
 import com.example.delivery.repository.store.StoreRepository;
 import com.example.delivery.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
@@ -25,10 +23,7 @@ public class StoreService {
    private final UserRepository userRepository;
 
    // 가게 생성
-   public StoreResponseDto createStore(StoreRequestDto dto) {
-      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-      Long userId = (Long) authentication.getPrincipal();
-
+   public StoreResponseDto createStore(StoreRequestDto dto, Long userId) {
       UserEntity user = userRepository.findById(userId)
               .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
@@ -121,6 +116,7 @@ public class StoreService {
    public StoreResponseDto updateStore(Long storeId, StoreRequestDto dto, Long userId) {
       UserEntity user = userRepository.findById(userId)
               .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
       StoreEntity store = storeRepository.findById(storeId)
               .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
@@ -128,6 +124,7 @@ public class StoreService {
          throw new CustomException(ErrorCode.STORE_OWNER_MISMATCH);
       }
 
+      // 주체가 서비스가 되게 수정
       dto.updateEntity(store);
       StoreEntity updatedStore = storeRepository.save(store);
 
@@ -146,6 +143,7 @@ public class StoreService {
    public StoreResponseDto closeStore(Long storeId, Long userId) {
       UserEntity user = userRepository.findById(userId)
               .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
       StoreEntity store = storeRepository.findById(storeId)
               .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
