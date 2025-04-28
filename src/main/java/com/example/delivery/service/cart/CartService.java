@@ -103,13 +103,11 @@ public class CartService {
                 .findFirst()
                 .map(presentCart -> {
                     presentCart.decreaseQuantity();
-
                     if (presentCart.getQuantity() == 0) {
                         cartItemRepository.delete(presentCart);
                     } else {
                         cartItemRepository.save(presentCart);
                     }
-
                     return CartResponseDto.itemDeleted();
                 })
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_MATCH_MENU));
