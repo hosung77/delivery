@@ -12,7 +12,6 @@ import java.util.List;
 
 @Entity(name = "tb_store")
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Setter
 @Builder  // 클래스에 @Builder를 한 번만 적용
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -95,5 +94,9 @@ public class StoreEntity extends BaseTimeEntity {
 
     public void updateMinOrderPrice(int newMinOrderPrice) {
         this.minOrderPrice = newMinOrderPrice;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

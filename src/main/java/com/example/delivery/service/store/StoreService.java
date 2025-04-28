@@ -10,8 +10,6 @@ import com.example.delivery.repository.store.StoreRepository;
 import com.example.delivery.repository.user.UserRepository;
 import com.example.delivery.service.auth.SecurityUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
@@ -25,40 +23,37 @@ public class StoreService {
    private final StoreRepository storeRepository;
    private final UserRepository userRepository;
 
-   // 가게 생성 서비스 26 70 128 162
+   // 가게 생성 서비스
    public StoreResponseDto createStore(StoreRequestDto dto) {
-       Long userId = SecurityUtil.getCurrentUserId();
+      Long userId = SecurityUtil.getCurrentUserId();  // JWT로 로그인된 유저 ID 가져오기
 
-       UserEntity user = userRepository.findById(userId)
-               .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-       // 1. 유저 정보 조회 (사장님 권한 확인)
+      UserEntity user = userRepository.findById(userId)
+              .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-      // 2. 사장님 권한 확인
+      // 사장님 권한 확인
       if (!user.getRoles().equals(UserEntity.Role.OWNER)) {
-         throw new CustomException(ErrorCode.FORBIDDEN);//
+         throw new CustomException(ErrorCode.FORBIDDEN);
       }
 
-      // 3. 최대 3개의 가게 제한
+      // 최대 3개의 가게 제한
       List<StoreEntity> stores = storeRepository.findByUser(user);
       if (stores.size() >= 3) {
-         throw new CustomException(ErrorCode.STORE_LIMIT_EXCEEDED);//
+         throw new CustomException(ErrorCode.STORE_LIMIT_EXCEEDED);
       }
 
-      // 4. StoreEntity 생성 (Builder 활용)
+      // StoreEntity 생성 및 저장
       StoreEntity store = StoreEntity.builder()
               .name(dto.getName())
-              .open(LocalTime.parse(dto.getOpen()))  // String -> LocalTime
-              .close(LocalTime.parse(dto.getClose())) // String -> LocalTime
+              .open(LocalTime.parse(dto.getOpen()))
+              .close(LocalTime.parse(dto.getClose()))
               .minOrderPrice(dto.getMinOrderPrice())
-              .status(StoreEntity.Status.OPEN)  // 기본 상태는 OPEN
-              .closed(false)  // 기본값은 false
-              .user(user)  // 가게 주인 설정
+              .status(StoreEntity.Status.OPEN)
+              .closed(false)
+              .user(user)
               .build();
 
-      // 5. 가게 저장
       StoreEntity savedStore = storeRepository.save(store);
 
-      // 6. 응답 DTO로 변환하여 반환
       return new StoreResponseDto(
               savedStore.getStoreId(),
               savedStore.getName(),
@@ -70,83 +65,27 @@ public class StoreService {
       );
    }
 
-   // 가게 목록 조회 서비스 (유저의 가게 목록 조회)
-   public List<StoreResponseDto> getStoresByUser(String email) {
-      // 1. 유저 정보 조회
-      UserEntity user = userRepository.findByEmail(email)
-              .orElseThrow(() ->  new CustomException(ErrorCode.USER_NOT_FOUND));//
-
-      // 2. 해당 유저의 가게 목록 조회
-      List<StoreEntity> stores = storeRepository.findByUser(user);
-
-      // 3. StoreResponseDto로 변환하여 반환
-      return stores.stream()
-              .map(store -> new StoreResponseDto(
-                      store.getStoreId(),
-                      store.getName(),
-                      store.getOpen(),
-                      store.getClose(),
-                      store.getMinOrderPrice(),
-                      store.getStatus().toString(),
-                      store.getMenus()
-              ))
-              .collect(Collectors.toList());
-   }
-
-   // 가게 목록 전체 조회 서비스
-   public List<StoreResponseDto> getAllStores() {
-      List<StoreEntity> stores = storeRepository.findByClosedFalse(); // 폐업되지 않은 가게만 조회
-
-      return stores.stream()
-              .map(store -> new StoreResponseDto(
-                      store.getStoreId(),
-                      store.getName(),
-                      store.getOpen(),
-                      store.getClose(),
-                      store.getMinOrderPrice(),
-                      store.getStatus().toString(),
-                      null // 메뉴 제외
-              ))
-              .collect(Collectors.toList());
-   }
-
-   // 가게 단건 조회 서비스 (가게 상세 조회)
-   public StoreResponseDto getStoreById(Long storeId) {
-      // 1. 가게 정보 조회
-      StoreEntity store = storeRepository.findById(storeId)
-              .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
-
-      // 2. StoreResponseDto로 변환하여 반환
-      return new StoreResponseDto(
-              store.getStoreId(),
-              store.getName(),
-              store.getOpen(),
-              store.getClose(),
-              store.getMinOrderPrice(),
-              store.getStatus().toString(),
-              store.getMenus()
-      );
-   }
-
    // 가게 수정 서비스
-   public StoreResponseDto updateStore(Long storeId, StoreRequestDto dto, String email) {
-      // 1. 유저 정보 조회 (사장님 권한 확인)
-      UserEntity user = userRepository.findByEmail(email)
+   public StoreResponseDto updateStore(Long storeId, StoreRequestDto dto) {
+      Long userId = SecurityUtil.getCurrentUserId();  // JWT로 로그인된 유저 ID 가져오기
+
+      // 유저 정보 조회
+      UserEntity user = userRepository.findById(userId)
               .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-      // 2. 가게 정보 조회
+      // 가게 정보 조회
       StoreEntity store = storeRepository.findById(storeId)
               .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
-      // 3. 유저가 해당 가게의 주인이 맞는지 확인
+      // 유저가 해당 가게의 주인이 맞는지 확인
       if (!store.getUser().equals(user)) {
          throw new CustomException(ErrorCode.STORE_OWNER_MISMATCH);
       }
 
-      // 4. DTO를 이용한 업데이트
+      // DTO를 이용한 가게 정보 업데이트
       dto.updateEntity(store);
 
-      // 5. 저장 후 응답 DTO 반환
+      // 저장 후 응답 DTO 반환
       StoreEntity updatedStore = storeRepository.save(store);
       return new StoreResponseDto(
               updatedStore.getStoreId(),
@@ -160,24 +99,85 @@ public class StoreService {
    }
 
    // 가게 폐업 서비스
-   public ResponseEntity<String> closeStore(Long storeId, String email) {
-      // 1. 유저 정보 조회 (사장님 권한 확인)
-      UserEntity user = userRepository.findByEmail(email)
+   public StoreResponseDto closeStore(Long storeId) {
+      Long userId = SecurityUtil.getCurrentUserId();  // JWT로 로그인된 유저 ID 가져오기
+
+      // 유저 정보 조회
+      UserEntity user = userRepository.findById(userId)
               .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-      // 2. 해당 유저의 가게 조회
+      // 가게 정보 조회
       StoreEntity store = storeRepository.findById(storeId)
               .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
-      // 3. 유저가 해당 가게의 주인이 맞는지 확인
+      // 유저가 해당 가게의 주인이 맞는지 확인
       if (!store.getUser().equals(user)) {
          throw new CustomException(ErrorCode.STORE_OWNER_MISMATCH);
       }
 
-      // 4. 가게 상태 변경 (폐업)
+      // 가게 상태 변경 (폐업)
       store.setStatus(StoreEntity.Status.CLOSE);
       storeRepository.save(store);
 
-      return  new ResponseEntity<>("가게가 폐업되었습니다.", HttpStatus.OK);
+      return new StoreResponseDto(store.getStoreId(), store.getName(), store.getStatus().name());
+   }
+
+   // 유저의 가게 목록 조회 서비스
+   public List<StoreResponseDto> getStoresByUser() {
+      Long userId = SecurityUtil.getCurrentUserId();  // JWT로 로그인된 유저 ID 가져오기
+
+      // 유저 정보 조회
+      UserEntity user = userRepository.findById(userId)
+              .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+      // 해당 유저의 가게 목록 조회
+      List<StoreEntity> stores = storeRepository.findByUser(user);
+
+      // StoreResponseDto로 변환하여 반환
+      return stores.stream()
+              .map(store -> new StoreResponseDto(
+                      store.getStoreId(),
+                      store.getName(),
+                      store.getOpen(),
+                      store.getClose(),
+                      store.getMinOrderPrice(),
+                      store.getStatus().toString(),
+                      store.getMenus()
+              ))
+              .collect(Collectors.toList());
+   }
+
+   // 모든 가게 목록 조회 서비스
+   public List<StoreResponseDto> getAllStores() {
+      List<StoreEntity> stores = storeRepository.findAll();
+
+      return stores.stream()
+              .map(store -> new StoreResponseDto(
+                      store.getStoreId(),
+                      store.getName(),
+                      store.getOpen(),
+                      store.getClose(),
+                      store.getMinOrderPrice(),
+                      store.getStatus().toString(),
+                      store.getMenus()
+              ))
+              .collect(Collectors.toList());
+   }
+
+   // 특정 가게 정보 조회 서비스 (추가된 메서드)
+   public StoreResponseDto getStoreById(Long storeId) {
+      // 가게 정보 조회
+      StoreEntity store = storeRepository.findById(storeId)
+              .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
+
+      return new StoreResponseDto(
+              store.getStoreId(),
+              store.getName(),
+              store.getOpen(),
+              store.getClose(),
+              store.getMinOrderPrice(),
+              store.getStatus().toString(),
+              store.getMenus()
+      );
    }
 }
