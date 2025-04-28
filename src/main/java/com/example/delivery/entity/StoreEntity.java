@@ -12,7 +12,6 @@ import java.util.List;
 
 @Entity(name = "tb_store")
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Setter
 @Builder  // 클래스에 @Builder를 한 번만 적용
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -94,6 +93,10 @@ public class StoreEntity extends BaseTimeEntity {
     // 최소 주문 금액 확인하는 메서드
     public boolean isMinOrderPrice(int price) {
         return price >= minOrderPrice;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
 }

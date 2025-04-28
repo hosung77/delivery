@@ -2,7 +2,6 @@ package com.example.delivery.controller.store;
 
 import com.example.delivery.dto.store.StoreRequestDto;
 import com.example.delivery.dto.store.StoreResponseDto;
-import com.example.delivery.entity.UserEntity;
 import com.example.delivery.service.store.StoreService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +27,8 @@ public class StoreController {
 
     // 유저의 가게 목록 조회
     @GetMapping("/user")
-    public ResponseEntity<List<StoreResponseDto>> getStoresByUser(@RequestAttribute UserEntity user) {
-        List<StoreResponseDto> stores = storeService.getStoresByUser(user.getEmail());
+    public ResponseEntity<List<StoreResponseDto>> getStoresByUser() {
+        List<StoreResponseDto> stores = storeService.getStoresByUser(); // 로그인된 사용자 정보 기반으로 가게 목록 조회
         return ResponseEntity.ok(stores);
     }
 
@@ -49,14 +48,15 @@ public class StoreController {
 
     // 가게 수정
     @PutMapping("/{storeId}")
-    public ResponseEntity<StoreResponseDto> updateStore(@PathVariable Long storeId, @RequestBody StoreRequestDto dto, @RequestAttribute UserEntity user) {
-        StoreResponseDto updatedStore = storeService.updateStore(storeId, dto, user.getEmail());
+    public ResponseEntity<StoreResponseDto> updateStore(@PathVariable Long storeId, @RequestBody StoreRequestDto dto) {
+        StoreResponseDto updatedStore = storeService.updateStore(storeId, dto);
         return ResponseEntity.ok(updatedStore);
     }
 
     // 가게 폐업
     @PutMapping("/{storeId}/close")
-    public ResponseEntity<String> closeStore(@PathVariable Long storeId, @RequestAttribute UserEntity user) {
-        return storeService.closeStore(storeId, user.getEmail());
+    public ResponseEntity<StoreResponseDto> closeStore(@PathVariable Long storeId) {
+        StoreResponseDto dto = storeService.closeStore(storeId);
+        return ResponseEntity.ok(dto);
     }
 }
