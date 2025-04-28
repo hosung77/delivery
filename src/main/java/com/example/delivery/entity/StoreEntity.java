@@ -17,6 +17,19 @@ import java.util.List;
 @Getter
 public class StoreEntity extends BaseTimeEntity {
 
+    public void setName(String name) {
+    }
+
+    public void setOpen(LocalTime parse) {
+    }
+
+    public void setClose(LocalTime parse) {
+
+    }
+
+    public void setMinOrderPrice(int minOrderPrice) {
+    }
+
     public enum Status {
         OPEN, CLOSE
     }
