@@ -3,8 +3,7 @@ package com.example.delivery.entity;
 import com.example.delivery.config.error.CustomException;
 import com.example.delivery.config.error.ErrorCode;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -13,6 +12,8 @@ import java.util.List;
 @Entity
 @Table(name = "tb_order")
 @Getter
+@AllArgsConstructor
+@Builder
 @NoArgsConstructor
 public class OrderEntity extends BaseTimeEntity{
     public enum Status {

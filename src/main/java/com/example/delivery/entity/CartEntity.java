@@ -25,7 +25,7 @@ public class CartEntity extends BaseTimeEntity {
     private UserEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "store_id", nullable = false)
+    @JoinColumn(name = "store_id")
     private StoreEntity store;
 
     @ManyToOne
@@ -46,6 +46,14 @@ public class CartEntity extends BaseTimeEntity {
 
     public static CartEntity of(UserEntity user, StoreEntity store) {
         return new CartEntity(user,store);
+    }
+
+    public void clearStore() {
+        this.store = null;
+    }
+
+    public void addStore(StoreEntity store) {
+        this.store = store;
     }
 
 }
