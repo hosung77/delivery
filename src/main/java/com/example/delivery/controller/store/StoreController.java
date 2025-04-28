@@ -1,3 +1,5 @@
+package com.example.delivery.controller.store;
+
 import com.example.delivery.dto.store.StoreRequestDto;
 import com.example.delivery.dto.store.StoreResponseDto;
 import com.example.delivery.service.store.StoreService;
