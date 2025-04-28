@@ -20,6 +20,7 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
 
+    // 리뷰 작성
     public void createReview(ReviewRequestDTO dto, OrderEntity order, UserEntity user) {
         if (!"배달 완료".equals(order.getStatus())) {
             throw new CustomException(ErrorCode.BAD_REQUEST);
@@ -39,10 +40,10 @@ public class ReviewService {
         reviewRepository.save(review);
     }
 
-    public List<ReviewResponseDTO> getReviews(Long storeId, int min, int max) {
-        return reviewRepository.findByStore_StoreIdAndRatingBetweenOrderByCreatedAtDesc(storeId, min, max)
+    // 리뷰 조회 (가게별 + 별점 범위)
+    public List<ReviewResponseDTO> getReviews(Long storeId, int minRating, int maxRating) {
+        return reviewRepository.findByStore_StoreIdAndRatingBetweenAndIsDeletedFalseOrderByCreatedAtDesc(storeId, minRating, maxRating)
                 .stream()
-                .filter(review -> !review.isDeleted())
                 .map(r -> new ReviewResponseDTO(
                         r.getReviewId(),
                         r.getComment(),
@@ -53,6 +54,7 @@ public class ReviewService {
                 .collect(Collectors.toList());
     }
 
+    // 리뷰 수정
     public void updateReview(Long reviewId, ReviewRequestDTO dto, UserEntity user) {
         ReviewEntity review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
@@ -65,6 +67,7 @@ public class ReviewService {
         reviewRepository.save(review);
     }
 
+    // 리뷰 삭제 (소프트 딜리트)
     public void deleteReview(Long reviewId, UserEntity user) {
         ReviewEntity review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
