@@ -3,19 +3,25 @@ package com.example.delivery.controller.store;
 import com.example.delivery.dto.store.StoreRequestDto;
 import com.example.delivery.dto.store.StoreResponseDto;
 import com.example.delivery.service.store.StoreService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/stores")
+@RequiredArgsConstructor
 public class StoreController {
 
     private final StoreService storeService;
 
-    public StoreController(StoreService storeService) {
-        this.storeService = storeService;
+    // 인증된 userId 가져오는 메서드
+    private Long getCurrentUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return (Long) authentication.getPrincipal();
     }
 
     // 가게 생성
@@ -28,7 +34,8 @@ public class StoreController {
     // 유저의 가게 목록 조회
     @GetMapping("/user")
     public ResponseEntity<List<StoreResponseDto>> getStoresByUser() {
-        List<StoreResponseDto> stores = storeService.getStoresByUser(); // 로그인된 사용자 정보 기반으로 가게 목록 조회
+        Long userId = getCurrentUserId();
+        List<StoreResponseDto> stores = storeService.getStoresByUser(userId);
         return ResponseEntity.ok(stores);
     }
 
@@ -49,14 +56,16 @@ public class StoreController {
     // 가게 수정
     @PutMapping("/{storeId}")
     public ResponseEntity<StoreResponseDto> updateStore(@PathVariable Long storeId, @RequestBody StoreRequestDto dto) {
-        StoreResponseDto updatedStore = storeService.updateStore(storeId, dto);
+        Long userId = getCurrentUserId();
+        StoreResponseDto updatedStore = storeService.updateStore(storeId, dto, userId);
         return ResponseEntity.ok(updatedStore);
     }
 
     // 가게 폐업
     @PutMapping("/{storeId}/close")
     public ResponseEntity<StoreResponseDto> closeStore(@PathVariable Long storeId) {
-        StoreResponseDto dto = storeService.closeStore(storeId);
+        Long userId = getCurrentUserId();
+        StoreResponseDto dto = storeService.closeStore(storeId, userId);
         return ResponseEntity.ok(dto);
     }
 }
