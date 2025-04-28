@@ -49,14 +49,16 @@ public class StoreController {
 
     // 가게 수정
     @PutMapping("/{storeId}")
-    public ResponseEntity<StoreResponseDto> updateStore(@PathVariable Long storeId, @RequestBody StoreRequestDto dto, @AuthenticationPrincipal Long userId) {
+    public ResponseEntity<StoreResponseDto> updateStore(@PathVariable Long storeId, @RequestBody StoreRequestDto dto, @AuthenticationPrincipal String userIdStr) {
+        Long userId = Long.parseLong(userIdStr);
         StoreResponseDto updatedStore = storeService.updateStore(storeId, dto, userId);
         return ResponseEntity.ok(updatedStore);
     }
 
     // 가게 폐업
     @PutMapping("/{storeId}/close")
-    public ResponseEntity<StoreResponseDto> closeStore(@PathVariable Long storeId, @AuthenticationPrincipal Long userId) {
+    public ResponseEntity<StoreResponseDto> closeStore(@PathVariable Long storeId, @AuthenticationPrincipal String userIdStr) {
+        Long userId = Long.parseLong(userIdStr);
         StoreResponseDto dto = storeService.closeStore(storeId, userId);
         return ResponseEntity.ok(dto);
     }
