@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<ReviewEntity, Long> {
-    List<ReviewEntity> findByStore_StoreIdAndRatingBetweenAndIsDeletedFalseOrderByCreatedAtDesc(Long storeId, int min, int max);
+    List<ReviewEntity> findByStore_StoreIdAndRatingBetweenAndDeletedFalseOrderByCreatedAtDesc(Long storeId, int min, int max);
     boolean existsByOrder(OrderEntity order);
 }
