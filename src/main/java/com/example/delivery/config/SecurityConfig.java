@@ -112,7 +112,7 @@ public class SecurityConfig {
             response.setStatus(HttpStatus.FORBIDDEN.value());
             response.setCharacterEncoding(StandardCharsets.UTF_8.name());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            ResponseEntity<ErrorResponseDTO> error = ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+            ResponseEntity<ErrorResponseDTO> error = ResponseEntity.status(HttpStatus.UNAUTHORIZED)//AccessDeniedException
                     .body(ErrorResponseDTO.from(ErrorCode.FORBIDDEN, request.getRequestURI()));
 
             response.getWriter().write(objectMapper.writeValueAsString(error));
