@@ -9,6 +9,8 @@ import com.example.delivery.entity.UserEntity;
 import com.example.delivery.repository.store.StoreRepository;
 import com.example.delivery.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class StoreService {
 
+   private static final Logger log = LoggerFactory.getLogger(StoreService.class);
    private final StoreRepository storeRepository;
    private final UserRepository userRepository;
 
@@ -122,7 +125,6 @@ public class StoreService {
               .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
       StoreEntity store = storeRepository.findById(storeId)
               .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
-
       // 가게의 소유자가 아닌 경우 예외 처리
       if (!store.getUser().equals(user)) {
          throw new CustomException(ErrorCode.STORE_OWNER_MISMATCH);
@@ -144,15 +146,18 @@ public class StoreService {
 
    // 가게 폐업
    public StoreResponseDto closeStore(Long storeId, Long userId) {
+
       UserEntity user = userRepository.findById(userId)
               .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+      System.out.println(user.getUserId());
       StoreEntity store = storeRepository.findById(storeId)
               .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
-
+      System.out.println(store.getUser().getUserId());
       // 가게의 소유자가 아닌 경우 예외 처리
-      if (!store.getUser().equals(user)) {
+      if (!store.getUser().getUserId().equals(user.getUserId())) {
          throw new CustomException(ErrorCode.STORE_OWNER_MISMATCH);
       }
+
 
       store.setStatus(StoreEntity.Status.CLOSE);  // 가게 상태를 폐업으로 변경
       storeRepository.save(store);
