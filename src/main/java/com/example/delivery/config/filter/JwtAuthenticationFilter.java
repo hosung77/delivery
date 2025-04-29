@@ -33,10 +33,7 @@ import java.util.List;
 import static com.example.delivery.config.util.AuthCookieUtil.*;
 
 
-/**
- * @author : kimjungmin
- * Created on : 2025. 4. 9.
- */
+
 @Slf4j
 @Getter
 @RequiredArgsConstructor
