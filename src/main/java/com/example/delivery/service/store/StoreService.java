@@ -149,10 +149,8 @@ public class StoreService {
 
       UserEntity user = userRepository.findById(userId)
               .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-      System.out.println(user.getUserId());
       StoreEntity store = storeRepository.findById(storeId)
               .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
-      System.out.println(store.getUser().getUserId());
       // 가게의 소유자가 아닌 경우 예외 처리
       if (!store.getUser().getUserId().equals(user.getUserId())) {
          throw new CustomException(ErrorCode.STORE_OWNER_MISMATCH);
