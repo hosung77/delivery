@@ -14,12 +14,12 @@ public class StoreResponseDto {
     private String close;
     private int minOrderPrice;
     private String status;
-    private List<MenuEntity> menus;
+    private List<MenuArrayDto> menus;
 
     // DateTimeFormatter를 static으로 정의하여 재사용 가능하게 설정
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
 
-    public StoreResponseDto(Long id, String name, LocalTime open, LocalTime close, int minOrderPrice, String status, List<MenuEntity> menus) {
+    public StoreResponseDto(Long id, String name, LocalTime open, LocalTime close, int minOrderPrice, String status, List<MenuArrayDto> menus) {
         this.id = id;
         this.name = name;
 
