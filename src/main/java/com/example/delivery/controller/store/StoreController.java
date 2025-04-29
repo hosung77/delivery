@@ -60,4 +60,5 @@ public class StoreController {
         StoreResponseDto dto = storeService.closeStore(storeId, userId);
         return ResponseEntity.ok(dto);
     }
+
 }

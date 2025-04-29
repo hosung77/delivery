@@ -1,5 +1,6 @@
 package com.example.delivery.entity;
 
+import com.example.delivery.dto.store.MenuArrayDto;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.Getter;

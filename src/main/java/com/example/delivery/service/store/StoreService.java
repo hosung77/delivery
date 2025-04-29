@@ -2,6 +2,7 @@ package com.example.delivery.service.store;
 
 import com.example.delivery.config.error.CustomException;
 import com.example.delivery.config.error.ErrorCode;
+import com.example.delivery.dto.store.MenuArrayDto;
 import com.example.delivery.dto.store.StoreRequestDto;
 import com.example.delivery.dto.store.StoreResponseDto;
 import com.example.delivery.entity.StoreEntity;
@@ -52,6 +53,10 @@ public class StoreService {
 
       StoreEntity savedStore = storeRepository.save(store);
 
+      List<MenuArrayDto> menuDtos = savedStore.getMenus().stream()
+              .map(MenuArrayDto::fromEntity)
+              .collect(Collectors.toList());
+
       return new StoreResponseDto(
               savedStore.getStoreId(),
               savedStore.getName(),
@@ -59,7 +64,7 @@ public class StoreService {
               savedStore.getClose(),
               savedStore.getMinOrderPrice(),
               savedStore.getStatus().toString(),
-              savedStore.getMenus()
+              menuDtos
       );
    }
 
@@ -71,16 +76,23 @@ public class StoreService {
       List<StoreEntity> stores = storeRepository.findByUser(user);
 
       return stores.stream()
-              .map(store -> new StoreResponseDto(
+              .map(store -> {
+                         List<MenuArrayDto> menuDtos = store.getMenus().stream()
+                                 .map(MenuArrayDto::fromEntity)
+                                 .collect(Collectors.toList());
+
+                         return new StoreResponseDto(
                       store.getStoreId(),
                       store.getName(),
                       store.getOpen(),
                       store.getClose(),
                       store.getMinOrderPrice(),
                       store.getStatus().toString(),
-                      store.getMenus()
-              ))
+                                 menuDtos
+                         );
+              })
               .collect(Collectors.toList());
+
    }
 
    // 전체 가게 목록 조회
@@ -105,6 +117,10 @@ public class StoreService {
       StoreEntity store = storeRepository.findById(storeId)
               .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
+      List<MenuArrayDto> menuDtos = store.getMenus().stream()
+              .map(MenuArrayDto::fromEntity)
+              .collect(Collectors.toList());
+
       return new StoreResponseDto(
               store.getStoreId(),
               store.getName(),
@@ -112,7 +128,7 @@ public class StoreService {
               store.getClose(),
               store.getMinOrderPrice(),
               store.getStatus().toString(),
-              store.getMenus()
+              menuDtos
       );
    }
 
@@ -131,6 +147,10 @@ public class StoreService {
       dto.updateEntity(store); // StoreRequestDto에서 전달받은 데이터를 Entity에 반영
       StoreEntity updatedStore = storeRepository.save(store);
 
+      List<MenuArrayDto> menuDtos = updatedStore.getMenus().stream()
+              .map(MenuArrayDto::fromEntity)
+              .collect(Collectors.toList());
+
       return new StoreResponseDto(
               updatedStore.getStoreId(),
               updatedStore.getName(),
@@ -138,7 +158,7 @@ public class StoreService {
               updatedStore.getClose(),
               updatedStore.getMinOrderPrice(),
               updatedStore.getStatus().toString(),
-              updatedStore.getMenus()
+              menuDtos
       );
    }
 
