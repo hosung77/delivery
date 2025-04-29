@@ -9,10 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-/**
- * @author    : kimjungmin
- * Created on : 2025. 4. 7.
- */
 public interface RefreshTokenRepository extends JpaRepository<RefreshTokenEntity, Long> {
 	Optional<RefreshTokenEntity> findByRefreshToken(String refreshToken);
 

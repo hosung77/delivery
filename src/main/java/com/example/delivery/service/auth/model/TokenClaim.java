@@ -6,10 +6,7 @@ import lombok.ToString;
 
 import java.util.List;
 
-/**
- * @author    : kimjungmin
- * Created on : 2025. 3. 23.
- */
+
 @Getter
 @AllArgsConstructor
 public class TokenClaim {

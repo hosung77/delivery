@@ -1,22 +1,16 @@
 package com.example.delivery.controller.menu;
-
 import com.example.delivery.dto.menu.req.CreateMenuReqDTO;
 import com.example.delivery.dto.menu.req.DeleteMenuReqDTO;
 import com.example.delivery.dto.menu.req.UpdateMenuReqDTO;
 import com.example.delivery.dto.menu.res.UpdateMenuResDTO;
-import com.example.delivery.entity.UserEntity;
 import com.example.delivery.service.menu.MenuService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
 
 /*
 메뉴 단일 조회는 되지 않기에 메소드 없음
