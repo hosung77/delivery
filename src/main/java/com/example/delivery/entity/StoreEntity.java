@@ -15,6 +15,7 @@ import java.util.List;
 @Builder  // 클래스에 @Builder를 한 번만 적용
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@ToString
 public class StoreEntity extends BaseTimeEntity {
 
     public void setName(String name) {
